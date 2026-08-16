@@ -1,0 +1,2072 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta
+      name="description"
+      content="Gerard Cars - Quality and affordable vehicles in Ago, Lagos, Nigeria."
+    />
+
+    <title>Gerard Cars | Quality Vehicles</title>
+
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- ========================================
+         GALLERY + CHATBOT STYLES
+    ======================================== -->
+
+    <style>
+      /* ========================================
+         VEHICLE GALLERY
+      ======================================== */
+
+      .vehicle-gallery {
+        width: 100%;
+        margin-bottom: 20px;
+      }
+
+      .gallery-main {
+        position: relative;
+        width: 100%;
+        height: 300px;
+        border-radius: 14px;
+        overflow: hidden;
+        background: #f1f1f1;
+      }
+
+      .gallery-main img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .gallery-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 42px;
+        height: 42px;
+        border: none;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.65);
+        color: white;
+        font-size: 25px;
+        cursor: pointer;
+        z-index: 5;
+      }
+
+      .gallery-arrow:hover {
+        background: rgba(0, 0, 0, 0.85);
+      }
+
+      .gallery-prev {
+        left: 12px;
+      }
+
+      .gallery-next {
+        right: 12px;
+      }
+
+      .gallery-counter {
+        position: absolute;
+        bottom: 12px;
+        right: 12px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 6px 10px;
+        border-radius: 20px;
+        font-size: 13px;
+      }
+
+      .gallery-thumbnails {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+      }
+
+      .gallery-thumbnail {
+        flex: 0 0 75px;
+        width: 75px;
+        height: 60px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 2px solid transparent;
+        cursor: pointer;
+        padding: 0;
+        background: #eee;
+      }
+
+      .gallery-thumbnail.active {
+        border-color: #111;
+      }
+
+      .gallery-thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .gallery-empty {
+        text-align: center;
+        padding: 25px;
+        color: #777;
+      }
+
+      .modal-content {
+        max-width: 850px;
+      }
+
+      @media (max-width: 600px) {
+        .gallery-main {
+          height: 230px;
+        }
+
+        .gallery-thumbnail {
+          flex-basis: 65px;
+          width: 65px;
+          height: 52px;
+        }
+      }
+
+      /* ========================================
+         GERARD CARS CHATBOT
+      ======================================== */
+
+      .gerard-chat-button {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        width: 62px;
+        height: 62px;
+        border: none;
+        border-radius: 50%;
+        background: #111;
+        color: white;
+        font-size: 28px;
+        cursor: pointer;
+        z-index: 9998;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+        transition:
+          transform 0.2s ease,
+          background 0.2s ease;
+      }
+
+      .gerard-chat-button:hover {
+        transform: scale(1.08);
+        background: #222;
+      }
+
+      .gerard-chat-notification {
+        position: absolute;
+        top: -4px;
+        right: -2px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #25d366;
+        border: 2px solid white;
+      }
+
+      .gerard-chat-window {
+        position: fixed;
+        right: 24px;
+        bottom: 98px;
+        width: 370px;
+        max-width: calc(100vw - 30px);
+        height: 540px;
+        max-height: calc(100vh - 130px);
+        background: white;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 15px 45px rgba(0, 0, 0, 0.25);
+        z-index: 9999;
+        display: none;
+        flex-direction: column;
+        border: 1px solid #e5e5e5;
+      }
+
+      .gerard-chat-window.open {
+        display: flex;
+      }
+
+      .gerard-chat-header {
+        background: #111;
+        color: white;
+        padding: 17px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .gerard-chat-header-left {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+      }
+
+      .gerard-chat-avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: white;
+        color: #111;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 21px;
+      }
+
+      .gerard-chat-header-info strong {
+        display: block;
+        font-size: 16px;
+      }
+
+      .gerard-chat-status {
+        display: block;
+        margin-top: 3px;
+        font-size: 12px;
+        opacity: 0.8;
+      }
+
+      .gerard-chat-close {
+        width: 34px;
+        height: 34px;
+        border: none;
+        background: transparent;
+        color: white;
+        font-size: 26px;
+        cursor: pointer;
+        border-radius: 50%;
+      }
+
+      .gerard-chat-close:hover {
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      .gerard-chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 15px;
+        background: #f6f6f6;
+      }
+
+      .gerard-chat-message {
+        display: flex;
+        margin-bottom: 12px;
+      }
+
+      .gerard-chat-message.bot {
+        justify-content: flex-start;
+      }
+
+      .gerard-chat-message.user {
+        justify-content: flex-end;
+      }
+
+      .gerard-chat-bubble {
+        max-width: 82%;
+        padding: 11px 13px;
+        border-radius: 14px;
+        font-size: 14px;
+        line-height: 1.45;
+        word-wrap: break-word;
+      }
+
+      .gerard-chat-message.bot .gerard-chat-bubble {
+        background: white;
+        color: #222;
+        border: 1px solid #e5e5e5;
+        border-bottom-left-radius: 4px;
+      }
+
+      .gerard-chat-message.user .gerard-chat-bubble {
+        background: #111;
+        color: white;
+        border-bottom-right-radius: 4px;
+      }
+
+      .gerard-chat-car-list {
+        margin-top: 8px;
+      }
+
+      .gerard-chat-car-item {
+        background: #f4f4f4;
+        border-radius: 9px;
+        padding: 9px;
+        margin-top: 7px;
+      }
+
+      .gerard-chat-car-item strong {
+        display: block;
+        margin-bottom: 3px;
+      }
+
+      .gerard-chat-car-price {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .gerard-chat-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        margin-top: 9px;
+      }
+
+      .gerard-chat-quick-button {
+        border: 1px solid #ddd;
+        background: white;
+        color: #222;
+        padding: 7px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        cursor: pointer;
+      }
+
+      .gerard-chat-quick-button:hover {
+        background: #eee;
+      }
+
+      .gerard-chat-input-area {
+        padding: 11px;
+        background: white;
+        border-top: 1px solid #e5e5e5;
+        display: flex;
+        gap: 8px;
+      }
+
+      .gerard-chat-input {
+        flex: 1;
+        min-width: 0;
+        border: 1px solid #ddd;
+        border-radius: 22px;
+        padding: 11px 14px;
+        outline: none;
+        font-size: 14px;
+      }
+
+      .gerard-chat-input:focus {
+        border-color: #111;
+      }
+
+      .gerard-chat-send {
+        width: 45px;
+        height: 45px;
+        border: none;
+        border-radius: 50%;
+        background: #111;
+        color: white;
+        cursor: pointer;
+        font-size: 18px;
+      }
+
+      .gerard-chat-send:hover {
+        background: #333;
+      }
+
+      .gerard-chat-whatsapp {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 9px;
+        padding: 9px 12px;
+        border-radius: 8px;
+        background: #25d366;
+        color: white;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .gerard-chat-typing {
+        display: none;
+        padding: 7px 12px;
+        font-size: 12px;
+        color: #777;
+      }
+
+      .gerard-chat-typing.show {
+        display: block;
+      }
+
+      @media (max-width: 600px) {
+        .gerard-chat-button {
+          right: 15px;
+          bottom: 15px;
+          width: 58px;
+          height: 58px;
+        }
+
+        .gerard-chat-window {
+          right: 10px;
+          bottom: 82px;
+          width: calc(100vw - 20px);
+          height: 520px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ========================================
+         NAVIGATION
+    ======================================== -->
+
+    <header class="site-header">
+      <nav class="navbar">
+        <a href="#home" class="logo"> 🚗 Gerard Cars </a>
+
+        <button
+          class="menu-toggle"
+          id="menuToggle"
+          aria-label="Open navigation menu"
+          aria-expanded="false"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <ul class="nav-links" id="navLinks">
+          <li>
+            <a href="#home">Home</a>
+          </li>
+
+          <li>
+            <a href="#cars">Cars</a>
+          </li>
+
+          <li>
+            <a href="#about">About</a>
+          </li>
+
+          <li>
+            <a href="#location">Location</a>
+          </li>
+
+          <li>
+            <a href="#contact">Contact</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- ========================================
+         MAIN
+    ======================================== -->
+
+    <main>
+      <!-- ========================================
+           HERO
+      ======================================== -->
+
+      <section id="home" class="hero">
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+          <span class="hero-tag"> 🚗 QUALITY VEHICLES </span>
+
+          <h1>Find Your Perfect Car</h1>
+
+          <p>
+            Quality and affordable vehicles available at
+            <strong>Gerard Cars</strong>.
+          </p>
+
+          <div class="hero-buttons">
+            <a href="#cars" class="btn primary-btn"> View Available Cars </a>
+
+            <a href="#contact" class="btn secondary-btn"> Contact Us </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================
+           CARS SECTION
+      ======================================== -->
+
+      <section id="cars" class="cars-section">
+        <div class="section-heading">
+          <span class="section-label"> OUR VEHICLES </span>
+
+          <h2>Available Cars</h2>
+
+          <p>Explore our available vehicles and find the right car for you.</p>
+        </div>
+
+        <!-- SEARCH -->
+
+        <div class="search-box">
+          <span class="search-icon"> 🔍 </span>
+
+          <input
+            type="text"
+            id="carSearch"
+            placeholder="Search for a car..."
+            autocomplete="off"
+          />
+        </div>
+
+        <!-- LOADING -->
+
+        <div
+          id="carsLoading"
+          style="
+            text-align: center;
+            padding: 30px;
+            font-size: 16px;
+            color: #666;
+          "
+        >
+          Loading available cars...
+        </div>
+
+        <!-- CAR GRID -->
+
+        <div class="cars-container" id="carsContainer"></div>
+
+        <!-- NO RESULTS -->
+
+        <div id="noResults" class="no-results" style="display: none">
+          <div class="no-results-icon">🔍</div>
+
+          <h3>No cars found</h3>
+
+          <p>Try searching for another vehicle.</p>
+        </div>
+      </section>
+
+      <!-- ========================================
+           WHY CHOOSE US
+      ======================================== -->
+
+      <section class="features-section">
+        <div class="section-heading light-heading">
+          <span class="section-label"> WHY CHOOSE US </span>
+
+          <h2>Why Gerard Cars?</h2>
+
+          <p>We make finding your next vehicle simple and convenient.</p>
+        </div>
+
+        <div class="features-container">
+          <div class="feature-card">
+            <div class="feature-icon">🚗</div>
+
+            <h3>Quality Vehicles</h3>
+
+            <p>
+              We focus on providing reliable and quality vehicles for our
+              customers.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">💰</div>
+
+            <h3>Affordable Prices</h3>
+
+            <p>Find vehicles at competitive prices that match your budget.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🤝</div>
+
+            <h3>Customer Service</h3>
+
+            <p>
+              We are here to help you choose the right vehicle for your needs.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================
+           ABOUT
+      ======================================== -->
+
+      <section id="about" class="about-section">
+        <div class="about-content">
+          <div class="about-text">
+            <span class="section-label"> ABOUT US </span>
+
+            <h2>Gerard Cars</h2>
+
+            <p>
+              Gerard Cars is a car dealership focused on providing quality
+              vehicles to customers.
+            </p>
+
+            <p>
+              We help customers find reliable vehicles that match their needs
+              and budget.
+            </p>
+
+            <a href="#contact" class="btn primary-btn"> Talk To Us </a>
+          </div>
+
+          <div class="about-highlight">
+            <div class="about-number" id="vehicleCount">0+</div>
+
+            <p>Vehicles Available</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================
+           LOCATION
+      ======================================== -->
+
+      <section id="location" class="location-section">
+        <div class="location-content">
+          <span class="section-label location-label"> FIND US </span>
+
+          <h2>Visit Our Location</h2>
+
+          <p class="location-intro">
+            Come and see our available vehicles in person.
+          </p>
+
+          <div class="location-card">
+            <div class="location-icon">📍</div>
+
+            <h3>Gerard Cars</h3>
+
+            <p class="location-address">Ago, Lagos, Nigeria</p>
+
+            <p>We are available to help you find the right vehicle.</p>
+
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=Ago%2C%20Lagos%2C%20Nigeria"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn primary-btn"
+            >
+              Get Directions
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================
+           CONTACT
+      ======================================== -->
+
+      <section id="contact" class="contact-section">
+        <div class="section-heading">
+          <span class="section-label"> GET IN TOUCH </span>
+
+          <h2>Contact Us</h2>
+
+          <p>Interested in one of our vehicles? Send us a message.</p>
+        </div>
+
+        <div class="contact-wrapper">
+          <!-- CONTACT DETAILS -->
+
+          <div class="contact-details">
+            <h3>Let's Talk About Your Next Car</h3>
+
+            <p>
+              Have questions about a vehicle? Contact us and we'll be happy to
+              help.
+            </p>
+
+            <div class="contact-item">
+              <span class="contact-icon"> 📞 </span>
+
+              <div>
+                <strong>Phone</strong>
+
+                <p>07048329554</p>
+              </div>
+            </div>
+
+            <div class="contact-item">
+              <span class="contact-icon"> 📍 </span>
+
+              <div>
+                <strong>Location</strong>
+
+                <p>Ago, Lagos, Nigeria</p>
+              </div>
+            </div>
+
+            <a
+              href="https://wa.me/2347048329554?text=Hello%20Gerard%20Cars,%20I%20would%20like%20to%20make%20an%20inquiry."
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn whatsapp-btn"
+            >
+              💬 Chat on WhatsApp
+            </a>
+          </div>
+
+          <!-- CONTACT FORM -->
+
+          <div class="contact-form-container">
+            <h3>Send Us an Inquiry</h3>
+
+            <p class="form-description">
+              Fill out the form below and we will get back to you.
+            </p>
+
+            <form
+              action="https://formspree.io/f/mdenzadv"
+              method="POST"
+              class="contact-form"
+            >
+              <label for="name"> Your Name </label>
+
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Enter your name"
+                required
+              />
+
+              <label for="phone"> Phone Number </label>
+
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                placeholder="Enter your phone number"
+                required
+              />
+
+              <label for="email"> Email Address </label>
+
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Enter your email address"
+                required
+              />
+
+              <label for="car"> Car You Are Interested In </label>
+
+              <select id="car" name="car" required>
+                <option value="">Select a car</option>
+              </select>
+
+              <label for="message"> Message </label>
+
+              <textarea
+                id="message"
+                name="message"
+                rows="5"
+                placeholder="Write your message..."
+                required
+              ></textarea>
+
+              <button type="submit" class="form-submit">Send Inquiry</button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ========================================
+         CAR DETAILS MODAL
+         WITH MULTIPLE PHOTO GALLERY
+    ======================================== -->
+
+    <div id="carModal" class="modal" aria-hidden="true">
+      <div
+        class="modal-content"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalCarName"
+      >
+        <button
+          id="closeModal"
+          class="close-button"
+          aria-label="Close car details"
+        >
+          &times;
+        </button>
+
+        <!-- VEHICLE GALLERY -->
+
+        <div class="vehicle-gallery">
+          <div class="gallery-main">
+            <img
+              id="modalImage"
+              src=""
+              alt="Selected car"
+              class="modal-car-image"
+            />
+
+            <button
+              type="button"
+              id="galleryPrev"
+              class="gallery-arrow gallery-prev"
+              aria-label="Previous picture"
+            >
+              ❮
+            </button>
+
+            <button
+              type="button"
+              id="galleryNext"
+              class="gallery-arrow gallery-next"
+              aria-label="Next picture"
+            >
+              ❯
+            </button>
+
+            <div id="galleryCounter" class="gallery-counter">1 / 1</div>
+          </div>
+
+          <div id="galleryThumbnails" class="gallery-thumbnails"></div>
+        </div>
+
+        <!-- VEHICLE DETAILS -->
+
+        <span class="modal-label"> VEHICLE DETAILS </span>
+
+        <h2 id="modalCarName">Car Name</h2>
+
+        <div class="modal-price">
+          <span>Price</span>
+
+          <strong id="modalPrice"> - </strong>
+        </div>
+
+        <div class="modal-details">
+          <div class="modal-detail-item">
+            <span>📅</span>
+
+            <div>
+              <small>Year</small>
+
+              <strong id="modalYear"> - </strong>
+            </div>
+          </div>
+
+          <div class="modal-detail-item">
+            <span>⚙️</span>
+
+            <div>
+              <small>Transmission</small>
+
+              <strong id="modalTransmission"> Automatic </strong>
+            </div>
+          </div>
+
+          <div class="modal-detail-item">
+            <span>⛽</span>
+
+            <div>
+              <small>Fuel Type</small>
+
+              <strong id="modalFuel"> Petrol </strong>
+            </div>
+          </div>
+
+          <div class="modal-detail-item">
+            <span>📍</span>
+
+            <div>
+              <small>Location</small>
+
+              <strong id="modalLocation"> Ago, Lagos, Nigeria </strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- WHATSAPP -->
+
+        <a
+          id="modalWhatsApp"
+          class="btn whatsapp-btn modal-whatsapp"
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          💬 Contact Dealer on WhatsApp
+        </a>
+      </div>
+    </div>
+
+    <!-- ========================================
+         FOOTER
+    ======================================== -->
+
+    <footer>
+      <div class="footer-content">
+        <div class="footer-brand">
+          <h3>Gerard Cars</h3>
+
+          <p>Quality vehicles at affordable prices.</p>
+        </div>
+
+        <div class="footer-links">
+          <a href="#home">Home</a>
+
+          <a href="#cars">Cars</a>
+
+          <a href="#about">About</a>
+
+          <a href="#location">Location</a>
+
+          <a href="#contact">Contact</a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>
+          ©
+          <span class="current-year">2026</span>
+          Gerard Cars. All Rights Reserved.
+        </p>
+      </div>
+    </footer>
+
+    <!-- ========================================
+         GERARD CARS CHATBOT
+    ======================================== -->
+
+    <button
+      id="gerardChatButton"
+      class="gerard-chat-button"
+      type="button"
+      aria-label="Open Gerard Cars chatbot"
+      title="Chat with Gerard Cars"
+    >
+      🤖
+
+      <span id="gerardChatNotification" class="gerard-chat-notification"></span>
+    </button>
+
+    <div id="gerardChatWindow" class="gerard-chat-window" aria-hidden="true">
+      <!-- CHAT HEADER -->
+
+      <div class="gerard-chat-header">
+        <div class="gerard-chat-header-left">
+          <div class="gerard-chat-avatar">🚗</div>
+
+          <div class="gerard-chat-header-info">
+            <strong>Gerard Cars</strong>
+
+            <span class="gerard-chat-status"> ● Online • Car Assistant </span>
+          </div>
+        </div>
+
+        <button
+          id="gerardChatClose"
+          class="gerard-chat-close"
+          type="button"
+          aria-label="Close chatbot"
+        >
+          &times;
+        </button>
+      </div>
+
+      <!-- CHAT MESSAGES -->
+
+      <div id="gerardChatMessages" class="gerard-chat-messages"></div>
+
+      <!-- TYPING -->
+
+      <div id="gerardChatTyping" class="gerard-chat-typing">
+        Gerard Cars is typing...
+      </div>
+
+      <!-- CHAT INPUT -->
+
+      <form id="gerardChatForm" class="gerard-chat-input-area">
+        <input
+          id="gerardChatInput"
+          class="gerard-chat-input"
+          type="text"
+          placeholder="Ask about our cars..."
+          autocomplete="off"
+        />
+
+        <button
+          class="gerard-chat-send"
+          type="submit"
+          aria-label="Send message"
+        >
+          ➤
+        </button>
+      </form>
+    </div>
+
+    <!-- ========================================
+         DATABASE CAR LOADER
+         + VEHICLE GALLERY
+         + CHATBOT
+    ======================================== -->
+
+    <script>
+      /* ========================================
+         API
+      ======================================== */
+
+      const GERARD_API_URL = "http://localhost:3000";
+
+      /* ========================================
+         WEBSITE ELEMENTS
+      ======================================== */
+
+      const carsContainer = document.getElementById("carsContainer");
+
+      const carsLoading = document.getElementById("carsLoading");
+
+      const vehicleCount = document.getElementById("vehicleCount");
+
+      const carSelect = document.getElementById("car");
+
+      const searchInput = document.getElementById("carSearch");
+
+      const noResults = document.getElementById("noResults");
+
+      const carModal = document.getElementById("carModal");
+
+      const modalImage = document.getElementById("modalImage");
+
+      const modalCarName = document.getElementById("modalCarName");
+
+      const modalPrice = document.getElementById("modalPrice");
+
+      const modalYear = document.getElementById("modalYear");
+
+      const modalTransmission = document.getElementById("modalTransmission");
+
+      const modalFuel = document.getElementById("modalFuel");
+
+      const modalLocation = document.getElementById("modalLocation");
+
+      const modalWhatsApp = document.getElementById("modalWhatsApp");
+
+      const closeModal = document.getElementById("closeModal");
+
+      const galleryPrev = document.getElementById("galleryPrev");
+
+      const galleryNext = document.getElementById("galleryNext");
+
+      const galleryCounter = document.getElementById("galleryCounter");
+
+      const galleryThumbnails = document.getElementById("galleryThumbnails");
+
+      /* ========================================
+         GLOBAL CAR DATA
+      ======================================== */
+
+      let allCars = [];
+
+      let currentGalleryImages = [];
+
+      let currentGalleryIndex = 0;
+
+      /* ========================================
+         FORMAT PRICE
+      ======================================== */
+
+      function formatPrice(price) {
+        const number = Number(price);
+
+        if (Number.isNaN(number)) {
+          return price || "Contact Dealer";
+        }
+
+        return "₦" + number.toLocaleString("en-NG");
+      }
+
+      /* ========================================
+         ESCAPE HTML
+      ======================================== */
+
+      function escapeHTML(value) {
+        const div = document.createElement("div");
+
+        div.textContent = value ?? "";
+
+        return div.innerHTML;
+      }
+
+      /* ========================================
+         GET CAR IMAGES
+      ======================================== */
+
+      function getCarImages(car) {
+        let images = [];
+
+        if (car.image && typeof car.image === "string") {
+          images.push(car.image);
+        }
+
+        if (Array.isArray(car.images)) {
+          images = images.concat(car.images);
+        }
+
+        if (Array.isArray(car.gallery)) {
+          images = images.concat(car.gallery);
+        }
+
+        if (Array.isArray(car.photos)) {
+          images = images.concat(car.photos);
+        }
+
+        const possibleFields = ["images", "gallery", "photos"];
+
+        possibleFields.forEach(function (field) {
+          if (typeof car[field] === "string") {
+            try {
+              const parsed = JSON.parse(car[field]);
+
+              if (Array.isArray(parsed)) {
+                images = images.concat(parsed);
+              }
+            } catch (error) {
+              /* Not JSON */
+            }
+          }
+        });
+
+        images = images
+          .filter(function (image) {
+            return typeof image === "string" && image.trim() !== "";
+          })
+          .map(function (image) {
+            return image.trim();
+          });
+
+        images = [...new Set(images)];
+
+        if (images.length === 0) {
+          images.push("images/toyota-camry.png");
+        }
+
+        return images;
+      }
+
+      /* ========================================
+         CREATE CAR CARD
+      ======================================== */
+
+      function createCarCard(car) {
+        const article = document.createElement("article");
+
+        article.className = "car-card";
+
+        article.dataset.car = `${car.brand || ""} ${car.model || ""}`;
+
+        const carName = `${car.brand || ""} ${car.model || ""}`.trim();
+
+        const price = formatPrice(car.price);
+
+        const description =
+          car.description || "Quality vehicle available at Gerard Cars.";
+
+        const images = getCarImages(car);
+
+        const image = images[0];
+
+        const availability = Number(car.available) === 1 ? "Available" : "Sold";
+
+        article.innerHTML = `
+
+          <div class="car-photo">
+
+            <img
+              src="${escapeHTML(image)}"
+              alt="${escapeHTML(carName)}"
+              loading="lazy"
+              onerror="this.style.display='none';"
+            />
+
+            <span class="car-badge">
+              ${escapeHTML(availability)}
+            </span>
+
+            <div class="car-name">
+              ${escapeHTML(carName)}
+            </div>
+
+          </div>
+
+          <div class="car-info">
+
+            <span class="car-category">
+              ${escapeHTML(car.category || "Vehicle")}
+            </span>
+
+            <h3>
+              ${escapeHTML(carName)}
+            </h3>
+
+            <p>
+              ${escapeHTML(description)}
+            </p>
+
+            <div class="price">
+              ${escapeHTML(price)}
+            </div>
+
+            <div class="car-buttons">
+
+              <button
+                class="btn details-btn"
+                type="button"
+              >
+                View Details
+              </button>
+
+              <a
+                class="btn outline-btn"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Contact Dealer
+              </a>
+
+            </div>
+
+          </div>
+        `;
+
+        /* CONTACT DEALER */
+
+        const contactButton = article.querySelector(".outline-btn");
+
+        const whatsappMessage = `Hello Gerard Cars, I am interested in the ${carName}. Please provide more information.`;
+
+        contactButton.href =
+          "https://wa.me/2347048329554?text=" +
+          encodeURIComponent(whatsappMessage);
+
+        /* VIEW DETAILS */
+
+        const detailsButton = article.querySelector(".details-btn");
+
+        detailsButton.addEventListener("click", function () {
+          openCarGallery(car, images);
+        });
+
+        return article;
+      }
+
+      /* ========================================
+         OPEN CAR GALLERY
+      ======================================== */
+
+      function openCarGallery(car, images) {
+        currentGalleryImages = images || [];
+
+        currentGalleryIndex = 0;
+
+        const carName = `${car.brand || ""} ${car.model || ""}`.trim();
+
+        modalCarName.textContent = carName;
+
+        modalPrice.textContent = formatPrice(car.price);
+
+        modalYear.textContent = car.year || "Contact Dealer";
+
+        modalTransmission.textContent = car.transmission || "Automatic";
+
+        modalFuel.textContent = car.fuel || "Petrol";
+
+        modalLocation.textContent = car.location || "Ago, Lagos, Nigeria";
+
+        modalWhatsApp.href =
+          "https://wa.me/2347048329554?text=" +
+          encodeURIComponent(
+            `Hello Gerard Cars, I am interested in the ${carName}. Please provide more information.`,
+          );
+
+        renderGallery();
+
+        carModal.style.display = "flex";
+
+        carModal.setAttribute("aria-hidden", "false");
+
+        document.body.style.overflow = "hidden";
+      }
+
+      /* ========================================
+         RENDER GALLERY
+      ======================================== */
+
+      function renderGallery() {
+        if (!currentGalleryImages || currentGalleryImages.length === 0) {
+          currentGalleryImages = ["images/toyota-camry.png"];
+        }
+
+        const currentImage = currentGalleryImages[currentGalleryIndex];
+
+        modalImage.src = currentImage;
+
+        modalImage.alt = modalCarName.textContent;
+
+        galleryCounter.textContent = `${currentGalleryIndex + 1} / ${currentGalleryImages.length}`;
+
+        if (currentGalleryImages.length <= 1) {
+          galleryPrev.style.display = "none";
+
+          galleryNext.style.display = "none";
+        } else {
+          galleryPrev.style.display = "block";
+
+          galleryNext.style.display = "block";
+        }
+
+        galleryThumbnails.innerHTML = "";
+
+        currentGalleryImages.forEach(function (image, index) {
+          const thumbnail = document.createElement("button");
+
+          thumbnail.type = "button";
+
+          thumbnail.className = "gallery-thumbnail";
+
+          if (index === currentGalleryIndex) {
+            thumbnail.classList.add("active");
+          }
+
+          thumbnail.innerHTML = `
+
+              <img
+                src="${escapeHTML(image)}"
+                alt="Vehicle picture ${index + 1}"
+                loading="lazy"
+              />
+
+            `;
+
+          thumbnail.addEventListener("click", function () {
+            currentGalleryIndex = index;
+
+            renderGallery();
+          });
+
+          galleryThumbnails.appendChild(thumbnail);
+        });
+      }
+
+      /* ========================================
+         NEXT PICTURE
+      ======================================== */
+
+      galleryNext.addEventListener("click", function () {
+        if (currentGalleryImages.length <= 1) {
+          return;
+        }
+
+        currentGalleryIndex++;
+
+        if (currentGalleryIndex >= currentGalleryImages.length) {
+          currentGalleryIndex = 0;
+        }
+
+        renderGallery();
+      });
+
+      /* ========================================
+         PREVIOUS PICTURE
+      ======================================== */
+
+      galleryPrev.addEventListener("click", function () {
+        if (currentGalleryImages.length <= 1) {
+          return;
+        }
+
+        currentGalleryIndex--;
+
+        if (currentGalleryIndex < 0) {
+          currentGalleryIndex = currentGalleryImages.length - 1;
+        }
+
+        renderGallery();
+      });
+
+      /* ========================================
+         DISPLAY CARS
+      ======================================== */
+
+      function displayCars(cars) {
+        carsContainer.innerHTML = "";
+
+        if (!cars || cars.length === 0) {
+          carsLoading.style.display = "none";
+
+          noResults.style.display = "block";
+
+          noResults.querySelector("h3").textContent = "No cars available";
+
+          noResults.querySelector("p").textContent = "Please check back soon.";
+
+          vehicleCount.textContent = "0+";
+
+          return;
+        }
+
+        carsLoading.style.display = "none";
+
+        noResults.style.display = "none";
+
+        vehicleCount.textContent = `${cars.length}+`;
+
+        cars.forEach(function (car) {
+          const card = createCarCard(car);
+
+          carsContainer.appendChild(card);
+        });
+
+        updateCarSelect(cars);
+      }
+
+      /* ========================================
+         UPDATE CONTACT FORM
+      ======================================== */
+
+      function updateCarSelect(cars) {
+        carSelect.innerHTML = '<option value="">Select a car</option>';
+
+        cars.forEach(function (car) {
+          const option = document.createElement("option");
+
+          const carName = `${car.brand || ""} ${car.model || ""}`.trim();
+
+          option.value = carName;
+
+          option.textContent = carName;
+
+          carSelect.appendChild(option);
+        });
+      }
+
+      /* ========================================
+         LOAD CARS FROM DATABASE
+      ======================================== */
+
+      async function loadCars() {
+        try {
+          carsLoading.textContent = "Loading available cars...";
+
+          const response = await fetch(`${GERARD_API_URL}/api/cars`);
+
+          if (!response.ok) {
+            throw new Error(`Server returned ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          console.log("Cars received from database:", data);
+
+          if (Array.isArray(data)) {
+            allCars = data;
+          } else if (Array.isArray(data.cars)) {
+            allCars = data.cars;
+          } else {
+            allCars = [];
+          }
+
+          console.log(
+            "Vehicle gallery data:",
+            allCars.map(function (car) {
+              return {
+                name: `${car.brand || ""} ${car.model || ""}`,
+                images: getCarImages(car),
+              };
+            }),
+          );
+
+          displayCars(allCars);
+
+          /*
+             Tell chatbot that
+             cars are ready.
+          */
+
+          updateChatbotAfterCarsLoad();
+        } catch (error) {
+          console.error("Unable to load cars:", error);
+
+          carsLoading.textContent = "Unable to load cars from the server.";
+
+          noResults.style.display = "block";
+
+          noResults.querySelector("h3").textContent = "Unable to load vehicles";
+
+          noResults.querySelector("p").textContent =
+            "Please make sure the Gerard Cars backend is running.";
+        }
+      }
+
+      /* ========================================
+         SEARCH CARS
+      ======================================== */
+
+      searchInput.addEventListener("input", function () {
+        const searchText = searchInput.value.toLowerCase().trim();
+
+        const filteredCars = allCars.filter(function (car) {
+          const searchableText = `${car.brand || ""} ${car.model || ""} ${
+            car.description || ""
+          } ${car.year || ""}`.toLowerCase();
+
+          return searchableText.includes(searchText);
+        });
+
+        displayCars(filteredCars);
+
+        if (filteredCars.length === 0 && searchText !== "") {
+          noResults.style.display = "block";
+
+          noResults.querySelector("h3").textContent = "No cars found";
+
+          noResults.querySelector("p").textContent =
+            "Try searching for another vehicle.";
+        }
+      });
+
+      /* ========================================
+         CLOSE MODAL
+      ======================================== */
+
+      function closeCarModal() {
+        carModal.style.display = "none";
+
+        carModal.setAttribute("aria-hidden", "true");
+
+        document.body.style.overflow = "";
+
+        currentGalleryImages = [];
+
+        currentGalleryIndex = 0;
+      }
+
+      closeModal.addEventListener("click", closeCarModal);
+
+      carModal.addEventListener("click", function (event) {
+        if (event.target === carModal) {
+          closeCarModal();
+        }
+      });
+
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+          closeCarModal();
+        }
+
+        if (carModal.style.display === "flex") {
+          if (event.key === "ArrowRight") {
+            galleryNext.click();
+          }
+
+          if (event.key === "ArrowLeft") {
+            galleryPrev.click();
+          }
+        }
+      });
+
+      /* ========================================
+         GERARD CARS CHATBOT
+      ======================================== */
+
+      const chatButton = document.getElementById("gerardChatButton");
+
+      const chatWindow = document.getElementById("gerardChatWindow");
+
+      const chatClose = document.getElementById("gerardChatClose");
+
+      const chatMessages = document.getElementById("gerardChatMessages");
+
+      const chatForm = document.getElementById("gerardChatForm");
+
+      const chatInput = document.getElementById("gerardChatInput");
+
+      const chatTyping = document.getElementById("gerardChatTyping");
+
+      const chatNotification = document.getElementById(
+        "gerardChatNotification",
+      );
+
+      /* ========================================
+         OPEN CHAT
+      ======================================== */
+
+      function openChat() {
+        chatWindow.classList.add("open");
+
+        chatWindow.setAttribute("aria-hidden", "false");
+
+        chatNotification.style.display = "none";
+
+        chatInput.focus();
+      }
+
+      /* ========================================
+         CLOSE CHAT
+      ======================================== */
+
+      function closeChat() {
+        chatWindow.classList.remove("open");
+
+        chatWindow.setAttribute("aria-hidden", "true");
+      }
+
+      chatButton.addEventListener("click", function () {
+        if (chatWindow.classList.contains("open")) {
+          closeChat();
+        } else {
+          openChat();
+        }
+      });
+
+      chatClose.addEventListener("click", closeChat);
+
+      /* ========================================
+         ADD CHAT MESSAGE
+      ======================================== */
+
+      function addChatMessage(message, sender = "bot") {
+        const messageWrapper = document.createElement("div");
+
+        messageWrapper.className = `gerard-chat-message ${sender}`;
+
+        const bubble = document.createElement("div");
+
+        bubble.className = "gerard-chat-bubble";
+
+        bubble.innerHTML = message;
+
+        messageWrapper.appendChild(bubble);
+
+        chatMessages.appendChild(messageWrapper);
+
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      /* ========================================
+         QUICK BUTTONS
+      ======================================== */
+
+      function addQuickButtons() {
+        const wrapper = document.createElement("div");
+
+        wrapper.className = "gerard-chat-actions";
+
+        const buttons = [
+          "🚗 Available cars",
+          "💰 Car prices",
+          "📍 Location",
+          "📞 Contact Gerard Cars",
+        ];
+
+        buttons.forEach(function (text) {
+          const button = document.createElement("button");
+
+          button.type = "button";
+
+          button.className = "gerard-chat-quick-button";
+
+          button.textContent = text;
+
+          button.addEventListener("click", function () {
+            const question = text
+              .replace("🚗 ", "")
+              .replace("💰 ", "")
+              .replace("📍 ", "")
+              .replace("📞 ", "");
+
+            addChatMessage(question, "user");
+
+            processChatMessage(question);
+          });
+
+          wrapper.appendChild(button);
+        });
+
+        const messageWrapper = document.createElement("div");
+
+        messageWrapper.className = "gerard-chat-message bot";
+
+        const bubble = document.createElement("div");
+
+        bubble.className = "gerard-chat-bubble";
+
+        bubble.appendChild(wrapper);
+
+        messageWrapper.appendChild(bubble);
+
+        chatMessages.appendChild(messageWrapper);
+      }
+
+      /* ========================================
+         INITIAL CHAT MESSAGE
+      ======================================== */
+
+      function initializeChatbot() {
+        if (chatMessages.children.length > 0) {
+          return;
+        }
+
+        addChatMessage(
+          "👋 Hello! Welcome to <strong>Gerard Cars</strong>.<br><br>" +
+            "I'm your Gerard Cars assistant. I can help you find available cars, check prices, tell you our location, or connect you with the dealer.",
+        );
+
+        addQuickButtons();
+      }
+
+      /* ========================================
+         CHATBOT CAR INFORMATION
+      ======================================== */
+
+      function getAvailableCars() {
+        if (!Array.isArray(allCars) || allCars.length === 0) {
+          return [];
+        }
+
+        return allCars.filter(function (car) {
+          return (
+            Number(car.available) === 1 ||
+            car.available === true ||
+            car.available === "1" ||
+            typeof car.available === "undefined"
+          );
+        });
+      }
+
+      /* ========================================
+         CAR SEARCH IN CHAT
+      ======================================== */
+
+      function findCarsFromMessage(message) {
+        const lower = message.toLowerCase();
+
+        return allCars.filter(function (car) {
+          const name = `${car.brand || ""} ${car.model || ""}`.toLowerCase();
+
+          return (
+            lower.includes(name) ||
+            name.split(" ").some(function (word) {
+              return word.length > 2 && lower.includes(word);
+            })
+          );
+        });
+      }
+
+      /* ========================================
+         DISPLAY CAR LIST IN CHAT
+      ======================================== */
+
+      function showCarsInChat(cars) {
+        if (!cars || cars.length === 0) {
+          addChatMessage(
+            "🚗 I couldn't find any vehicle matching that request right now.<br><br>" +
+              "You can click <strong>Available cars</strong> below or visit the Cars section.",
+          );
+
+          return;
+        }
+
+        let html = "🚗 Here are the vehicles I found:";
+
+        html += '<div class="gerard-chat-car-list">';
+
+        cars.slice(0, 8).forEach(function (car) {
+          const name = `${car.brand || ""} ${car.model || ""}`.trim();
+
+          const price = formatPrice(car.price);
+
+          const year = car.year || "";
+
+          html += `
+              <div class="gerard-chat-car-item">
+                <strong>${escapeHTML(name)}</strong>
+
+                ${year ? `<span>${escapeHTML(String(year))}</span><br>` : ""}
+
+                <span class="gerard-chat-car-price">
+                  ${escapeHTML(price)}
+                </span>
+              </div>
+            `;
+        });
+
+        html += "</div>";
+
+        addChatMessage(html);
+      }
+
+      /* ========================================
+         CHATBOT RESPONSE
+      ======================================== */
+
+      function processChatMessage(message) {
+        const lower = message.toLowerCase().trim();
+
+        chatTyping.classList.add("show");
+
+        setTimeout(function () {
+          chatTyping.classList.remove("show");
+
+          /*
+             Greeting
+            */
+
+          if (
+            lower === "hi" ||
+            lower === "hello" ||
+            lower === "hey" ||
+            lower.includes("good morning") ||
+            lower.includes("good afternoon") ||
+            lower.includes("good evening")
+          ) {
+            addChatMessage(
+              "👋 Hello! Welcome to Gerard Cars. How can I help you today?",
+            );
+
+            addQuickButtons();
+
+            return;
+          }
+
+          /*
+             Available cars
+            */
+
+          if (
+            lower.includes("available") ||
+            lower.includes("cars do you have") ||
+            lower.includes("what cars") ||
+            lower.includes("vehicles")
+          ) {
+            const availableCars = getAvailableCars();
+
+            if (availableCars.length === 0) {
+              addChatMessage(
+                "🚗 Our vehicle list is currently empty or I'm unable to see the cars from the server. Please make sure the Gerard Cars backend is running.",
+              );
+            } else {
+              showCarsInChat(availableCars);
+            }
+
+            return;
+          }
+
+          /*
+             Price question
+            */
+
+          if (
+            lower.includes("price") ||
+            lower.includes("cost") ||
+            lower.includes("how much") ||
+            lower.includes("₦")
+          ) {
+            const matchedCars = findCarsFromMessage(lower);
+
+            if (matchedCars.length > 0) {
+              showCarsInChat(matchedCars);
+            } else {
+              const availableCars = getAvailableCars();
+
+              if (availableCars.length > 0) {
+                addChatMessage(
+                  "💰 Sure! Here are the prices of our available vehicles:",
+                );
+
+                showCarsInChat(availableCars);
+              } else {
+                addChatMessage(
+                  "💰 I can't see the vehicle prices right now. Please make sure the Gerard Cars server is running.",
+                );
+              }
+            }
+
+            return;
+          }
+
+          /*
+             Location
+            */
+
+          if (
+            lower.includes("location") ||
+            lower.includes("where are you") ||
+            lower.includes("where is") ||
+            lower.includes("address") ||
+            lower.includes("ago")
+          ) {
+            addChatMessage(
+              "📍 <strong>Gerard Cars</strong><br><br>" +
+                "We are located in <strong>Ago, Lagos, Nigeria</strong>.<br><br>" +
+                "You can use the <strong>Get Directions</strong> button in our Location section.",
+            );
+
+            return;
+          }
+
+          /*
+             Phone / contact
+            */
+
+          if (
+            lower.includes("phone") ||
+            lower.includes("contact") ||
+            lower.includes("number") ||
+            lower.includes("call") ||
+            lower.includes("dealer")
+          ) {
+            addChatMessage(
+              "📞 You can contact Gerard Cars on <strong>07048329554</strong>.<br><br>" +
+                "You can also send us a WhatsApp message below.<br><br>" +
+                '<a class="gerard-chat-whatsapp" href="https://wa.me/2347048329554?text=Hello%20Gerard%20Cars,%20I%20would%20like%20to%20make%20an%20inquiry." target="_blank" rel="noopener noreferrer">💚 Chat on WhatsApp</a>',
+            );
+
+            return;
+          }
+
+          /*
+             WhatsApp
+            */
+
+          if (lower.includes("whatsapp") || lower.includes("message you")) {
+            addChatMessage(
+              "💚 Absolutely! You can contact Gerard Cars directly on WhatsApp.<br><br>" +
+                '<a class="gerard-chat-whatsapp" href="https://wa.me/2347048329554?text=Hello%20Gerard%20Cars,%20I%20would%20like%20to%20make%20an%20inquiry." target="_blank" rel="noopener noreferrer">💬 Open WhatsApp</a>',
+            );
+
+            return;
+          }
+
+          /*
+             Specific car search
+            */
+
+          const matchedCars = findCarsFromMessage(lower);
+
+          if (matchedCars.length > 0) {
+            showCarsInChat(matchedCars);
+
+            return;
+          }
+
+          /*
+             About Gerard Cars
+            */
+
+          if (
+            lower.includes("about") ||
+            lower.includes("who are you") ||
+            lower.includes("gerard")
+          ) {
+            addChatMessage(
+              "<strong>Gerard Cars</strong> is a car dealership focused on providing quality and affordable vehicles to customers in Ago, Lagos, Nigeria. 🚗",
+            );
+
+            return;
+          }
+
+          /*
+             Thanks
+            */
+
+          if (lower.includes("thank") || lower.includes("thanks")) {
+            addChatMessage(
+              "You're welcome! 😊 I'm here whenever you need help finding a vehicle.",
+            );
+
+            return;
+          }
+
+          /*
+             Default answer
+            */
+
+          addChatMessage(
+            "🤖 I'm still learning, but I can help you with:<br><br>" +
+              "🚗 Available cars<br>" +
+              "💰 Vehicle prices<br>" +
+              "📍 Our location<br>" +
+              "📞 Contact information<br>" +
+              "💚 WhatsApp enquiries<br><br>" +
+              'Try asking: <strong>"What cars do you have?"</strong>',
+          );
+
+          addQuickButtons();
+        }, 500);
+      }
+
+      /* ========================================
+         CHAT FORM
+      ======================================== */
+
+      chatForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const message = chatInput.value.trim();
+
+        if (!message) {
+          return;
+        }
+
+        addChatMessage(escapeHTML(message), "user");
+
+        chatInput.value = "";
+
+        processChatMessage(message);
+      });
+
+      /* ========================================
+         ENTER KEY
+      ======================================== */
+
+      chatInput.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+          event.preventDefault();
+
+          chatForm.requestSubmit();
+        }
+      });
+
+      /* ========================================
+         AFTER DATABASE LOAD
+      ======================================== */
+
+      function updateChatbotAfterCarsLoad() {
+        console.log(
+          "Gerard Cars chatbot now has access to:",
+          allCars.length,
+          "vehicles",
+        );
+      }
+
+      /* ========================================
+         INITIALIZE CHATBOT
+      ======================================== */
+
+      initializeChatbot();
+
+      /* ========================================
+         START DATABASE
+      ======================================== */
+
+      loadCars();
+    </script>
+
+    <!-- ========================================
+         EXISTING WEBSITE SCRIPT
+    ======================================== -->
+
+    <script src="script.js"></script>
+  </body>
+</html>

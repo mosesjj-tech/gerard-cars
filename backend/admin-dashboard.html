@@ -1,0 +1,2182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Gerard Cars - Admin Dashboard</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f4f6f8;
+        color: #111827;
+        line-height: 1.5;
+      }
+
+      button,
+      input,
+      textarea,
+      select {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      .header {
+        background: #111827;
+        color: white;
+        padding: 18px 25px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.15);
+      }
+
+      .header-inner {
+        max-width: 1200px;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+      }
+
+      .logo {
+        font-size: 22px;
+        font-weight: 800;
+      }
+
+      .header-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .header-button {
+        border: 1px solid #374151;
+        background: #1f2937;
+        color: white;
+        padding: 9px 14px;
+        border-radius: 7px;
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      .header-button:hover {
+        background: #374151;
+      }
+
+      .logout-button {
+        background: #dc2626;
+        border-color: #dc2626;
+      }
+
+      .logout-button:hover {
+        background: #b91c1c;
+      }
+
+      .container {
+        width: min(1200px, 94%);
+        margin: 35px auto 60px;
+      }
+
+      .page-title {
+        margin-bottom: 25px;
+      }
+
+      .page-title h1 {
+        font-size: clamp(30px, 5vw, 45px);
+        margin-bottom: 5px;
+      }
+
+      .page-title p {
+        color: #6b7280;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .stat-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 25px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+      }
+
+      .stat-icon {
+        font-size: 30px;
+        margin-bottom: 10px;
+      }
+
+      .stat-number {
+        font-size: 35px;
+        font-weight: 900;
+      }
+
+      .stat-label {
+        color: #6b7280;
+        font-weight: 600;
+      }
+
+      .dashboard-section {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+      }
+
+      .section-title {
+        margin-bottom: 20px;
+      }
+
+      .section-title h2 {
+        font-size: 25px;
+        margin-bottom: 5px;
+      }
+
+      .section-title p {
+        color: #6b7280;
+      }
+
+      .car-form {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-group.full {
+        grid-column: 1 / -1;
+      }
+
+      .form-group label {
+        font-weight: 700;
+        margin-bottom: 7px;
+      }
+
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 12px 13px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        outline: none;
+        background: white;
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus,
+      .form-group select:focus {
+        border-color: #111827;
+      }
+
+      .form-group textarea {
+        resize: vertical;
+        min-height: 110px;
+      }
+
+      .photo-upload-box {
+        border: 2px dashed #cbd5e1;
+        border-radius: 12px;
+        padding: 18px;
+        background: #f8fafc;
+      }
+
+      .photo-upload-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+
+      .upload-button {
+        display: inline-block;
+        background: #2563eb;
+        color: white;
+        padding: 11px 16px;
+        border-radius: 8px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .upload-button:hover {
+        background: #1d4ed8;
+      }
+
+      .gallery-upload-button {
+        background: #16a34a;
+      }
+
+      .gallery-upload-button:hover {
+        background: #15803d;
+      }
+
+      .clear-photo-button {
+        border: none;
+        background: #6b7280;
+        color: white;
+        padding: 11px 16px;
+        border-radius: 8px;
+        font-weight: 800;
+      }
+
+      .clear-photo-button:hover {
+        background: #4b5563;
+      }
+
+      .upload-help {
+        margin-top: 10px;
+        color: #6b7280;
+        font-size: 13px;
+      }
+
+      .photo-limit-box {
+        margin-top: 12px;
+        padding: 12px;
+        border-radius: 8px;
+        background: #eff6ff;
+        color: #1e40af;
+        font-weight: 700;
+        font-size: 14px;
+      }
+
+      .photo-limit-box.full {
+        background: #fef2f2;
+        color: #991b1b;
+      }
+
+      .photo-preview {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 12px;
+        margin-top: 15px;
+      }
+
+      .preview-card {
+        position: relative;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        overflow: hidden;
+        background: #f9fafb;
+      }
+
+      .preview-card img {
+        display: block;
+        width: 100%;
+        height: 110px;
+        object-fit: cover;
+      }
+
+      .preview-label {
+        padding: 7px;
+        font-size: 12px;
+        font-weight: 700;
+        text-align: center;
+      }
+
+      .main-label {
+        color: #166534;
+      }
+
+      .new-label {
+        color: #1d4ed8;
+      }
+
+      .gallery-section {
+        margin-top: 22px;
+        padding-top: 20px;
+        border-top: 1px solid #e5e7eb;
+      }
+
+      .gallery-section h3 {
+        margin-bottom: 12px;
+      }
+
+      .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+      }
+
+      .gallery-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        overflow: hidden;
+        background: #f9fafb;
+      }
+
+      .gallery-card img {
+        display: block;
+        width: 100%;
+        height: 130px;
+        object-fit: cover;
+      }
+
+      .gallery-card-bottom {
+        padding: 8px;
+      }
+
+      .gallery-delete-button {
+        width: 100%;
+        border: none;
+        border-radius: 6px;
+        padding: 8px;
+        background: #dc2626;
+        color: white;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .gallery-delete-button:hover {
+        background: #b91c1c;
+      }
+
+      .gallery-count {
+        color: #6b7280;
+        font-size: 13px;
+        margin-bottom: 12px;
+      }
+
+      .main-image-box {
+        margin-bottom: 15px;
+        padding: 12px;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+      }
+
+      .main-image-box strong {
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      .main-image-preview {
+        width: 180px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 8px;
+        display: block;
+      }
+
+      .gallery-manager {
+        margin-top: 20px;
+        padding: 18px;
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+      }
+
+      .gallery-manager h4 {
+        margin-bottom: 8px;
+      }
+
+      .gallery-manager p {
+        color: #6b7280;
+        font-size: 14px;
+        margin-bottom: 12px;
+      }
+
+      .gallery-file-input {
+        width: 100%;
+        padding: 10px;
+        background: white;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+      }
+
+      .gallery-selected-preview {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 12px;
+        margin-top: 15px;
+      }
+
+      .selected-gallery-card {
+        border: 1px solid #dbeafe;
+        border-radius: 9px;
+        overflow: hidden;
+        background: white;
+      }
+
+      .selected-gallery-card img {
+        width: 100%;
+        height: 100px;
+        object-fit: cover;
+        display: block;
+      }
+
+      .selected-gallery-name {
+        padding: 7px;
+        font-size: 11px;
+        font-weight: 700;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      .gallery-upload-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 15px;
+      }
+
+      .upload-gallery-now {
+        border: none;
+        background: #16a34a;
+        color: white;
+        padding: 11px 16px;
+        border-radius: 8px;
+        font-weight: 800;
+      }
+
+      .upload-gallery-now:hover {
+        background: #15803d;
+      }
+
+      .upload-gallery-now:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .clear-gallery-selection {
+        border: none;
+        background: #6b7280;
+        color: white;
+        padding: 11px 16px;
+        border-radius: 8px;
+        font-weight: 800;
+      }
+
+      .clear-gallery-selection:hover {
+        background: #4b5563;
+      }
+
+      .form-actions {
+        grid-column: 1 / -1;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        border: none;
+        border-radius: 8px;
+        padding: 12px 18px;
+        font-weight: 800;
+      }
+
+      .primary {
+        background: #111827;
+        color: white;
+      }
+
+      .primary:hover {
+        background: #000;
+      }
+
+      .secondary {
+        background: #e5e7eb;
+        color: #111827;
+      }
+
+      .secondary:hover {
+        background: #d1d5db;
+      }
+
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .message {
+        display: none;
+        margin-bottom: 20px;
+        padding: 13px;
+        border-radius: 8px;
+        font-weight: 700;
+      }
+
+      .message.success {
+        display: block;
+        background: #dcfce7;
+        color: #166534;
+      }
+
+      .message.error {
+        display: block;
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .table-wrapper {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 900px;
+      }
+
+      th,
+      td {
+        padding: 13px 12px;
+        border-bottom: 1px solid #e5e7eb;
+        text-align: left;
+        vertical-align: middle;
+      }
+
+      th {
+        background: #f9fafb;
+        font-size: 13px;
+        text-transform: uppercase;
+      }
+
+      .car-thumb {
+        width: 80px;
+        height: 55px;
+        object-fit: cover;
+        border-radius: 7px;
+        background: #e5e7eb;
+      }
+
+      .gallery-count-badge {
+        display: inline-block;
+        margin-top: 5px;
+        padding: 4px 7px;
+        border-radius: 20px;
+        background: #e0e7ff;
+        color: #3730a3;
+        font-size: 11px;
+        font-weight: 800;
+      }
+
+      .status {
+        display: inline-block;
+        padding: 5px 9px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .available {
+        background: #dcfce7;
+        color: #166534;
+      }
+
+      .sold {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 7px;
+        flex-wrap: wrap;
+      }
+
+      .edit-button,
+      .delete-button,
+      .gallery-button {
+        border: none;
+        border-radius: 6px;
+        padding: 8px 11px;
+        color: white;
+        font-weight: 700;
+      }
+
+      .edit-button {
+        background: #f59e0b;
+      }
+
+      .edit-button:hover {
+        background: #d97706;
+      }
+
+      .gallery-button {
+        background: #2563eb;
+      }
+
+      .gallery-button:hover {
+        background: #1d4ed8;
+      }
+
+      .delete-button {
+        background: #dc2626;
+      }
+
+      .delete-button:hover {
+        background: #b91c1c;
+      }
+
+      .loading,
+      .empty {
+        text-align: center;
+        padding: 30px;
+        color: #6b7280;
+      }
+
+      @media (max-width: 800px) {
+        .stats {
+          grid-template-columns: 1fr;
+        }
+
+        .car-form {
+          grid-template-columns: 1fr;
+        }
+
+        .form-group.full,
+        .form-actions {
+          grid-column: auto;
+        }
+
+        .header-inner {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo">🚗 Gerard Cars Admin</div>
+
+        <div class="header-buttons">
+          <a href="index.html" class="header-button">🌐 View Website</a>
+
+          <button
+            type="button"
+            id="logoutButton"
+            class="header-button logout-button"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="page-title">
+        <h1>Admin Dashboard</h1>
+        <p>Manage your Gerard Cars vehicles from here.</p>
+      </div>
+
+      <section class="stats">
+        <div class="stat-card">
+          <div class="stat-icon">🚗</div>
+          <div class="stat-number" id="totalCars">0</div>
+          <div class="stat-label">Total Vehicles</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">✅</div>
+          <div class="stat-number" id="availableCars">0</div>
+          <div class="stat-label">Available Vehicles</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">🔴</div>
+          <div class="stat-number" id="soldCars">0</div>
+          <div class="stat-label">Sold Vehicles</div>
+        </div>
+      </section>
+
+      <div id="dashboardMessage" class="message"></div>
+
+      <section class="dashboard-section">
+        <div class="section-title">
+          <h2 id="formTitle">➕ Add New Car</h2>
+
+          <p>Add a vehicle with up to 6 pictures.</p>
+        </div>
+
+        <form id="carForm" class="car-form">
+          <div class="form-group">
+            <label for="brand">Brand</label>
+
+            <input type="text" id="brand" required placeholder="e.g. Toyota" />
+          </div>
+
+          <div class="form-group">
+            <label for="model">Model</label>
+
+            <input type="text" id="model" required placeholder="e.g. Camry" />
+          </div>
+
+          <div class="form-group">
+            <label for="year">Year</label>
+
+            <input
+              type="number"
+              id="year"
+              min="1900"
+              max="2100"
+              placeholder="e.g. 2025"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="price">Price (₦)</label>
+
+            <input
+              type="number"
+              id="price"
+              min="0"
+              required
+              placeholder="e.g. 16000000"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="available">Availability</label>
+
+            <select id="available">
+              <option value="1">Available</option>
+              <option value="0">Unavailable / Sold</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>📸 Vehicle Pictures</label>
+
+            <div class="photo-upload-box">
+              <input
+                type="file"
+                id="images"
+                accept="image/jpeg,image/jpg,image/png,image/webp"
+                style="display: none"
+              />
+
+              <div class="photo-upload-buttons">
+                <label for="images" class="upload-button" id="addPictureButton">
+                  ➕ Add Picture
+                </label>
+
+                <button
+                  type="button"
+                  id="clearPicturesButton"
+                  class="clear-photo-button"
+                >
+                  🗑️ Clear New Pictures
+                </button>
+              </div>
+
+              <div class="upload-help">
+                You can select pictures one at a time here when creating a
+                vehicle. Maximum 5MB per picture.
+              </div>
+
+              <div id="photoLimitBox" class="photo-limit-box">
+                📸 0 / 6 pictures
+              </div>
+
+              <div id="photoPreview" class="photo-preview"></div>
+            </div>
+          </div>
+
+          <div class="form-group full">
+            <label for="description">Description</label>
+
+            <textarea
+              id="description"
+              placeholder="Describe the vehicle..."
+            ></textarea>
+          </div>
+
+          <div
+            id="existingGallerySection"
+            class="gallery-section form-group full"
+            style="display: none"
+          >
+            <h3>🖼️ Existing Vehicle Pictures</h3>
+
+            <div id="galleryCount" class="gallery-count">
+              Loading gallery...
+            </div>
+
+            <div id="mainImageBox" class="main-image-box"></div>
+
+            <div id="existingGallery" class="gallery-grid"></div>
+
+            <!-- NEW GALLERY MANAGER -->
+            <div class="gallery-manager">
+              <h4>➕ Add Extra Pictures</h4>
+
+              <p>
+                Select multiple pictures at once and upload them to this
+                vehicle. You can have a maximum of 6 pictures total, including
+                the main picture.
+              </p>
+
+              <input
+                type="file"
+                id="galleryImages"
+                class="gallery-file-input"
+                accept="image/jpeg,image/jpg,image/png,image/webp"
+                multiple
+              />
+
+              <div id="galleryUploadLimit" class="photo-limit-box">
+                📸 0 / 6 pictures
+              </div>
+
+              <div
+                id="gallerySelectedPreview"
+                class="gallery-selected-preview"
+              ></div>
+
+              <div class="gallery-upload-actions">
+                <button
+                  type="button"
+                  id="uploadGalleryButton"
+                  class="upload-gallery-now"
+                >
+                  ⬆️ Upload Extra Pictures
+                </button>
+
+                <button
+                  type="button"
+                  id="clearGallerySelectionButton"
+                  class="clear-gallery-selection"
+                >
+                  🗑️ Clear Selection
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" id="saveButton" class="btn primary">
+              Add Car
+            </button>
+
+            <button
+              type="button"
+              id="cancelEditButton"
+              class="btn secondary"
+              style="display: none"
+            >
+              Cancel Edit
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <section class="dashboard-section">
+        <div class="section-title">
+          <h2>🚘 Current Cars</h2>
+
+          <p>View, edit, manage gallery photos and delete vehicles.</p>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>Vehicle</th>
+                <th>Year</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody id="carsTableBody">
+              <tr>
+                <td colspan="6" class="loading">Loading vehicles...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const API_URL = "http://localhost:3000";
+
+      const MAX_TOTAL_IMAGES = 6;
+
+      const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+      const token = localStorage.getItem("gerardAdminToken");
+
+      /* =========================
+         LOGIN CHECK
+      ========================= */
+
+      if (!token) {
+        window.location.href = "admin.html";
+      }
+
+      /* =========================
+         ELEMENTS
+      ========================= */
+
+      const carForm = document.getElementById("carForm");
+
+      const formTitle = document.getElementById("formTitle");
+
+      const saveButton = document.getElementById("saveButton");
+
+      const cancelEditButton = document.getElementById("cancelEditButton");
+
+      const dashboardMessage = document.getElementById("dashboardMessage");
+
+      const carsTableBody = document.getElementById("carsTableBody");
+
+      const totalCars = document.getElementById("totalCars");
+
+      const availableCars = document.getElementById("availableCars");
+
+      const soldCars = document.getElementById("soldCars");
+
+      const logoutButton = document.getElementById("logoutButton");
+
+      const brandInput = document.getElementById("brand");
+
+      const modelInput = document.getElementById("model");
+
+      const yearInput = document.getElementById("year");
+
+      const priceInput = document.getElementById("price");
+
+      const availableInput = document.getElementById("available");
+
+      const imagesInput = document.getElementById("images");
+
+      const descriptionInput = document.getElementById("description");
+
+      const photoPreview = document.getElementById("photoPreview");
+
+      const photoLimitBox = document.getElementById("photoLimitBox");
+
+      const existingGallerySection = document.getElementById(
+        "existingGallerySection",
+      );
+
+      const existingGallery = document.getElementById("existingGallery");
+
+      const galleryCount = document.getElementById("galleryCount");
+
+      const mainImageBox = document.getElementById("mainImageBox");
+
+      const clearPicturesButton = document.getElementById(
+        "clearPicturesButton",
+      );
+
+      const addPictureButton = document.getElementById("addPictureButton");
+
+      /* =========================
+         NEW GALLERY ELEMENTS
+      ========================= */
+
+      const galleryImagesInput = document.getElementById("galleryImages");
+
+      const galleryUploadButton = document.getElementById(
+        "uploadGalleryButton",
+      );
+
+      const clearGallerySelectionButton = document.getElementById(
+        "clearGallerySelectionButton",
+      );
+
+      const gallerySelectedPreview = document.getElementById(
+        "gallerySelectedPreview",
+      );
+
+      const galleryUploadLimit = document.getElementById("galleryUploadLimit");
+
+      /* =========================
+         STATE
+      ========================= */
+
+      let cars = [];
+
+      let editingCarId = null;
+
+      let currentGallery = [];
+
+      let currentMainImageExists = false;
+
+      let selectedImageFiles = [];
+
+      let selectedGalleryFiles = [];
+
+      /* =========================
+         MESSAGE
+      ========================= */
+
+      function showMessage(message, type) {
+        dashboardMessage.textContent = message;
+
+        dashboardMessage.className = "message " + type;
+
+        setTimeout(() => {
+          dashboardMessage.className = "message";
+
+          dashboardMessage.textContent = "";
+        }, 5000);
+      }
+
+      /* =========================
+         PRICE
+      ========================= */
+
+      function formatPrice(price) {
+        const number = Number(price);
+
+        if (Number.isNaN(number)) {
+          return "Contact Dealer";
+        }
+
+        return "₦" + number.toLocaleString("en-NG");
+      }
+
+      /* =========================
+         IMAGE URL
+      ========================= */
+
+      function getImageUrl(imagePath) {
+        if (!imagePath) {
+          return API_URL + "/images/toyota-camry.png";
+        }
+
+        if (
+          imagePath.startsWith("http://") ||
+          imagePath.startsWith("https://")
+        ) {
+          return imagePath;
+        }
+
+        return API_URL + "/" + imagePath.replace(/^\/+/, "");
+      }
+
+      /* =========================
+         ESCAPE HTML
+      ========================= */
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      /* =========================
+         EXISTING PHOTO COUNT
+      ========================= */
+
+      function getExistingPictureCount() {
+        const main = currentMainImageExists ? 1 : 0;
+
+        return main + currentGallery.length;
+      }
+
+      /* =========================
+         TOTAL NEW PHOTO COUNT
+      ========================= */
+
+      function getTotalPictureCount() {
+        return getExistingPictureCount() + selectedImageFiles.length;
+      }
+
+      /* =========================
+         PHOTO LIMIT
+      ========================= */
+
+      function updatePhotoLimitDisplay() {
+        const total = getTotalPictureCount();
+
+        const remaining = Math.max(0, MAX_TOTAL_IMAGES - total);
+
+        photoLimitBox.textContent = `📸 ${total} / ${MAX_TOTAL_IMAGES} pictures`;
+
+        if (remaining === 0) {
+          photoLimitBox.className = "photo-limit-box full";
+
+          addPictureButton.style.pointerEvents = "none";
+
+          addPictureButton.style.opacity = "0.5";
+        } else {
+          photoLimitBox.className = "photo-limit-box";
+
+          addPictureButton.style.pointerEvents = "auto";
+
+          addPictureButton.style.opacity = "1";
+        }
+      }
+
+      /* =========================
+         PREVIEW NEW PICTURES
+      ========================= */
+
+      function renderPhotoPreview() {
+        photoPreview.innerHTML = "";
+
+        selectedImageFiles.forEach((file, index) => {
+          const reader = new FileReader();
+
+          reader.onload = function (event) {
+            const card = document.createElement("div");
+
+            card.className = "preview-card";
+
+            const label =
+              !editingCarId && index === 0
+                ? "⭐ Main Image"
+                : `New Photo ${index + 1}`;
+
+            const labelClass =
+              !editingCarId && index === 0 ? "main-label" : "new-label";
+
+            card.innerHTML = `
+                <img
+                  src="${event.target.result}"
+                  alt="Vehicle photo"
+                >
+
+                <div class="preview-label ${labelClass}">
+                  ${label}
+                </div>
+              `;
+
+            photoPreview.appendChild(card);
+          };
+
+          reader.readAsDataURL(file);
+        });
+
+        updatePhotoLimitDisplay();
+      }
+
+      /* =========================
+         ADD NEW VEHICLE PICTURES
+      ========================= */
+
+      imagesInput.addEventListener("change", function () {
+        const file = imagesInput.files[0];
+
+        if (!file) {
+          return;
+        }
+
+        if (file.size > MAX_FILE_SIZE) {
+          showMessage(`${file.name} is larger than 5MB.`, "error");
+
+          imagesInput.value = "";
+
+          return;
+        }
+
+        const allowedTypes = [
+          "image/jpeg",
+          "image/jpg",
+          "image/png",
+          "image/webp",
+        ];
+
+        if (!allowedTypes.includes(file.type)) {
+          showMessage("Please choose a JPG, PNG or WEBP image.", "error");
+
+          imagesInput.value = "";
+
+          return;
+        }
+
+        const total = getTotalPictureCount();
+
+        if (total >= MAX_TOTAL_IMAGES) {
+          showMessage("This vehicle already has 6 pictures.", "error");
+
+          imagesInput.value = "";
+
+          return;
+        }
+
+        selectedImageFiles.push(file);
+
+        imagesInput.value = "";
+
+        renderPhotoPreview();
+
+        showMessage("Picture added successfully.", "success");
+      });
+
+      /* =========================
+         CLEAR NEW PICTURES
+      ========================= */
+
+      clearPicturesButton.addEventListener("click", function () {
+        selectedImageFiles = [];
+
+        photoPreview.innerHTML = "";
+
+        updatePhotoLimitDisplay();
+      });
+
+      /* =========================
+         GALLERY FILE SELECTION
+      ========================= */
+
+      galleryImagesInput.addEventListener("change", function () {
+        const files = Array.from(galleryImagesInput.files || []);
+
+        if (files.length === 0) {
+          return;
+        }
+
+        const existingCount = getExistingPictureCount();
+
+        const availableSlots = MAX_TOTAL_IMAGES - existingCount;
+
+        if (availableSlots <= 0) {
+          showMessage(
+            "This vehicle already has the maximum of 6 pictures.",
+            "error",
+          );
+
+          galleryImagesInput.value = "";
+
+          return;
+        }
+
+        if (files.length > availableSlots) {
+          showMessage(
+            `Only ${availableSlots} more picture(s) can be added.`,
+            "error",
+          );
+
+          galleryImagesInput.value = "";
+
+          return;
+        }
+
+        for (const file of files) {
+          if (file.size > MAX_FILE_SIZE) {
+            showMessage(`${file.name} is larger than 5MB.`, "error");
+
+            galleryImagesInput.value = "";
+
+            selectedGalleryFiles = [];
+
+            renderGallerySelectedPreview();
+
+            return;
+          }
+
+          const allowedTypes = [
+            "image/jpeg",
+            "image/jpg",
+            "image/png",
+            "image/webp",
+          ];
+
+          if (!allowedTypes.includes(file.type)) {
+            showMessage(`${file.name} is not a supported image.`, "error");
+
+            galleryImagesInput.value = "";
+
+            selectedGalleryFiles = [];
+
+            renderGallerySelectedPreview();
+
+            return;
+          }
+        }
+
+        selectedGalleryFiles = files;
+
+        renderGallerySelectedPreview();
+      });
+
+      /* =========================
+         PREVIEW SELECTED GALLERY
+      ========================= */
+
+      function renderGallerySelectedPreview() {
+        gallerySelectedPreview.innerHTML = "";
+
+        selectedGalleryFiles.forEach((file) => {
+          const reader = new FileReader();
+
+          reader.onload = function (event) {
+            const card = document.createElement("div");
+
+            card.className = "selected-gallery-card";
+
+            card.innerHTML = `
+                <img
+                  src="${event.target.result}"
+                  alt="Selected gallery picture"
+                >
+
+                <div class="selected-gallery-name">
+                  ${escapeHtml(file.name)}
+                </div>
+              `;
+
+            gallerySelectedPreview.appendChild(card);
+          };
+
+          reader.readAsDataURL(file);
+        });
+
+        updateGalleryUploadLimit();
+      }
+
+      /* =========================
+         GALLERY UPLOAD LIMIT
+      ========================= */
+
+      function updateGalleryUploadLimit() {
+        const existing = getExistingPictureCount();
+
+        const selected = selectedGalleryFiles.length;
+
+        const total = existing + selected;
+
+        const remaining = Math.max(0, MAX_TOTAL_IMAGES - total);
+
+        galleryUploadLimit.textContent = `📸 ${total} / ${MAX_TOTAL_IMAGES} pictures — ${remaining} remaining`;
+
+        if (total >= MAX_TOTAL_IMAGES) {
+          galleryUploadLimit.className = "photo-limit-box full";
+        } else {
+          galleryUploadLimit.className = "photo-limit-box";
+        }
+      }
+
+      /* =========================
+         CLEAR GALLERY SELECTION
+      ========================= */
+
+      clearGallerySelectionButton.addEventListener("click", function () {
+        selectedGalleryFiles = [];
+
+        galleryImagesInput.value = "";
+
+        gallerySelectedPreview.innerHTML = "";
+
+        updateGalleryUploadLimit();
+      });
+
+      /* =========================
+         UPLOAD EXTRA GALLERY
+      ========================= */
+
+      galleryUploadButton.addEventListener("click", async function () {
+        if (!editingCarId) {
+          showMessage(
+            "Please click Edit or Gallery for a vehicle first.",
+            "error",
+          );
+
+          return;
+        }
+
+        if (selectedGalleryFiles.length === 0) {
+          showMessage("Please select at least one extra picture.", "error");
+
+          return;
+        }
+
+        const existingCount = getExistingPictureCount();
+
+        const availableSlots = MAX_TOTAL_IMAGES - existingCount;
+
+        if (selectedGalleryFiles.length > availableSlots) {
+          showMessage(
+            `Only ${availableSlots} more picture(s) can be added.`,
+            "error",
+          );
+
+          return;
+        }
+
+        galleryUploadButton.disabled = true;
+
+        galleryUploadButton.textContent = "Uploading...";
+
+        try {
+          const formData = new FormData();
+
+          selectedGalleryFiles.forEach((file) => {
+            formData.append("images", file);
+          });
+
+          const response = await fetch(
+            `${API_URL}/api/cars/${editingCarId}/gallery`,
+            {
+              method: "POST",
+
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+
+              body: formData,
+            },
+          );
+
+          const data = await response.json();
+
+          if (response.status === 401) {
+            localStorage.removeItem("gerardAdminToken");
+
+            window.location.href = "admin.html";
+
+            return;
+          }
+
+          if (!response.ok) {
+            throw new Error(
+              data.message || "Unable to upload gallery pictures.",
+            );
+          }
+
+          showMessage(
+            data.message || "Extra pictures uploaded successfully!",
+            "success",
+          );
+
+          selectedGalleryFiles = [];
+
+          galleryImagesInput.value = "";
+
+          gallerySelectedPreview.innerHTML = "";
+
+          await loadGallery(editingCarId);
+
+          await loadCars();
+        } catch (error) {
+          console.error(error);
+
+          showMessage(
+            error.message || "Unable to upload gallery pictures.",
+            "error",
+          );
+        } finally {
+          galleryUploadButton.disabled = false;
+
+          galleryUploadButton.textContent = "⬆️ Upload Extra Pictures";
+        }
+      });
+
+      /* =========================
+         LOAD CARS
+      ========================= */
+
+      async function loadCars() {
+        try {
+          const response = await fetch(`${API_URL}/api/cars`);
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.message || "Unable to load vehicles.");
+          }
+
+          cars = Array.isArray(data) ? data : data.cars || [];
+
+          updateStatistics();
+
+          await renderCars();
+        } catch (error) {
+          console.error(error);
+
+          carsTableBody.innerHTML = `
+            <tr>
+              <td colspan="6" class="empty">
+                Unable to load vehicles.
+                Make sure your backend is running.
+              </td>
+            </tr>
+          `;
+
+          showMessage(error.message || "Unable to load vehicles.", "error");
+        }
+      }
+
+      /* =========================
+         STATISTICS
+      ========================= */
+
+      function updateStatistics() {
+        const total = cars.length;
+
+        const available = cars.filter(
+          (car) => Number(car.available) === 1,
+        ).length;
+
+        const sold = total - available;
+
+        totalCars.textContent = total;
+
+        availableCars.textContent = available;
+
+        soldCars.textContent = sold;
+      }
+
+      /* =========================
+         GET GALLERY
+      ========================= */
+
+      async function getGallery(carId) {
+        try {
+          const response = await fetch(`${API_URL}/api/cars/${carId}/gallery`);
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            return [];
+          }
+
+          return Array.isArray(data.gallery) ? data.gallery : [];
+        } catch (error) {
+          console.error(error);
+
+          return [];
+        }
+      }
+
+      /* =========================
+         RENDER CARS
+      ========================= */
+
+      async function renderCars() {
+        if (cars.length === 0) {
+          carsTableBody.innerHTML = `
+            <tr>
+              <td colspan="6" class="empty">
+                No vehicles have been added yet.
+              </td>
+            </tr>
+          `;
+
+          return;
+        }
+
+        carsTableBody.innerHTML = "";
+
+        for (const car of cars) {
+          const row = document.createElement("tr");
+
+          const carName = `${car.brand} ${car.model}`;
+
+          const image = getImageUrl(car.image);
+
+          const isAvailable = Number(car.available) === 1;
+
+          const gallery = await getGallery(car.id);
+
+          const totalPictures = (car.image ? 1 : 0) + gallery.length;
+
+          row.innerHTML = `
+            <td>
+              <img
+                src="${image}"
+                alt="${escapeHtml(carName)}"
+                class="car-thumb"
+                onerror="this.src='${API_URL}/images/toyota-camry.png';"
+              >
+            </td>
+
+            <td>
+              <strong>
+                ${escapeHtml(carName)}
+              </strong>
+
+              <div>
+                <span class="gallery-count-badge">
+                  🖼️ ${totalPictures}/6 photos
+                </span>
+              </div>
+            </td>
+
+            <td>
+              ${car.year || "-"}
+            </td>
+
+            <td>
+              <strong>
+                ${formatPrice(car.price)}
+              </strong>
+            </td>
+
+            <td>
+              <span
+                class="status ${isAvailable ? "available" : "sold"}"
+              >
+                ${isAvailable ? "Available" : "Sold"}
+              </span>
+            </td>
+
+            <td>
+              <div class="action-buttons">
+
+                <button
+                  type="button"
+                  class="edit-button"
+                  data-id="${car.id}"
+                >
+                  ✏️ Edit
+                </button>
+
+                <button
+                  type="button"
+                  class="gallery-button"
+                  data-id="${car.id}"
+                >
+                  🖼️ Gallery
+                </button>
+
+                <button
+                  type="button"
+                  class="delete-button"
+                  data-id="${car.id}"
+                >
+                  🗑️ Delete
+                </button>
+
+              </div>
+            </td>
+          `;
+
+          carsTableBody.appendChild(row);
+        }
+
+        document.querySelectorAll(".edit-button").forEach((button) => {
+          button.addEventListener("click", () => editCar(button.dataset.id));
+        });
+
+        document.querySelectorAll(".gallery-button").forEach((button) => {
+          button.addEventListener("click", () => editCar(button.dataset.id));
+        });
+
+        document.querySelectorAll(".delete-button").forEach((button) => {
+          button.addEventListener("click", () => deleteCar(button.dataset.id));
+        });
+      }
+
+      /* =========================
+         ADD / UPDATE CAR
+      ========================= */
+
+      carForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        if (!editingCarId) {
+          if (selectedImageFiles.length === 0) {
+            showMessage("Please add at least one vehicle picture.", "error");
+
+            return;
+          }
+        }
+
+        if (getTotalPictureCount() > MAX_TOTAL_IMAGES) {
+          showMessage("A vehicle can have a maximum of 6 pictures.", "error");
+
+          return;
+        }
+
+        saveButton.disabled = true;
+
+        saveButton.textContent = editingCarId ? "Updating..." : "Adding...";
+
+        try {
+          const formData = new FormData();
+
+          formData.append("brand", brandInput.value.trim());
+
+          formData.append("model", modelInput.value.trim());
+
+          formData.append("year", yearInput.value);
+
+          formData.append("price", priceInput.value);
+
+          formData.append("available", availableInput.value);
+
+          formData.append("description", descriptionInput.value.trim());
+
+          /*
+              NEW VEHICLE:
+              First selected picture becomes
+              the main vehicle image.
+            */
+
+          if (!editingCarId && selectedImageFiles.length > 0) {
+            formData.append("image", selectedImageFiles[0]);
+          }
+
+          const url = editingCarId
+            ? `${API_URL}/api/cars/${editingCarId}`
+            : `${API_URL}/api/cars`;
+
+          const method = editingCarId ? "PUT" : "POST";
+
+          const response = await fetch(url, {
+            method: method,
+
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+
+            body: formData,
+          });
+
+          const data = await response.json();
+
+          if (response.status === 401) {
+            localStorage.removeItem("gerardAdminToken");
+
+            window.location.href = "admin.html";
+
+            return;
+          }
+
+          if (!response.ok) {
+            throw new Error(data.message || "Unable to save vehicle.");
+          }
+
+          const savedCarId = editingCarId || (data.car && data.car.id);
+
+          /*
+              For NEW cars:
+              remaining selected pictures
+              become gallery pictures.
+
+              For EDIT cars:
+              gallery pictures are now
+              uploaded separately using
+              the Gallery manager.
+            */
+
+          if (!editingCarId && selectedImageFiles.length > 1 && savedCarId) {
+            const galleryFiles = selectedImageFiles.slice(1);
+
+            const galleryFormData = new FormData();
+
+            galleryFiles.forEach((file) => {
+              galleryFormData.append("images", file);
+            });
+
+            const galleryResponse = await fetch(
+              `${API_URL}/api/cars/${savedCarId}/gallery`,
+              {
+                method: "POST",
+
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+
+                body: galleryFormData,
+              },
+            );
+
+            const galleryData = await galleryResponse.json();
+
+            if (galleryResponse.status === 401) {
+              localStorage.removeItem("gerardAdminToken");
+
+              window.location.href = "admin.html";
+
+              return;
+            }
+
+            if (!galleryResponse.ok) {
+              throw new Error(
+                galleryData.message ||
+                  "Vehicle saved but gallery upload failed.",
+              );
+            }
+          }
+
+          showMessage(
+            editingCarId
+              ? "Vehicle updated successfully!"
+              : "Vehicle added successfully!",
+            "success",
+          );
+
+          resetForm();
+
+          await loadCars();
+        } catch (error) {
+          console.error(error);
+
+          showMessage(error.message || "Unable to save vehicle.", "error");
+        } finally {
+          saveButton.disabled = false;
+
+          saveButton.textContent = editingCarId ? "Update Vehicle" : "Add Car";
+        }
+      });
+
+      /* =========================
+         EDIT CAR
+      ========================= */
+
+      async function editCar(id) {
+        const car = cars.find((item) => String(item.id) === String(id));
+
+        if (!car) {
+          return;
+        }
+
+        editingCarId = car.id;
+
+        selectedImageFiles = [];
+
+        selectedGalleryFiles = [];
+
+        galleryImagesInput.value = "";
+
+        gallerySelectedPreview.innerHTML = "";
+
+        formTitle.textContent = "✏️ Edit Vehicle";
+
+        saveButton.textContent = "Update Vehicle";
+
+        cancelEditButton.style.display = "inline-block";
+
+        brandInput.value = car.brand || "";
+
+        modelInput.value = car.model || "";
+
+        yearInput.value = car.year || "";
+
+        priceInput.value = car.price || "";
+
+        availableInput.value = Number(car.available) === 1 ? "1" : "0";
+
+        descriptionInput.value = car.description || "";
+
+        photoPreview.innerHTML = "";
+
+        existingGallerySection.style.display = "block";
+
+        currentMainImageExists = Boolean(car.image);
+
+        currentGallery = [];
+
+        mainImageBox.innerHTML = `
+          <strong>
+            ⭐ Main Vehicle Image
+          </strong>
+
+          <img
+            src="${getImageUrl(car.image)}"
+            class="main-image-preview"
+            alt="Main vehicle image"
+          >
+        `;
+
+        await loadGallery(car.id);
+
+        updatePhotoLimitDisplay();
+
+        updateGalleryUploadLimit();
+
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }
+
+      /* =========================
+         LOAD GALLERY
+      ========================= */
+
+      async function loadGallery(carId) {
+        existingGallery.innerHTML = "";
+
+        galleryCount.textContent = "Loading gallery...";
+
+        try {
+          const response = await fetch(`${API_URL}/api/cars/${carId}/gallery`);
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.message || "Unable to load gallery.");
+          }
+
+          currentGallery = Array.isArray(data.gallery) ? data.gallery : [];
+
+          const total = getExistingPictureCount();
+
+          const remaining = Math.max(0, MAX_TOTAL_IMAGES - total);
+
+          galleryCount.textContent = `${total}/6 total pictures — ${remaining} remaining`;
+
+          updatePhotoLimitDisplay();
+
+          updateGalleryUploadLimit();
+
+          if (currentGallery.length === 0) {
+            existingGallery.innerHTML = `
+              <div class="empty">
+                No extra gallery pictures yet.
+              </div>
+            `;
+
+            return;
+          }
+
+          currentGallery.forEach((galleryImage) => {
+            const card = document.createElement("div");
+
+            card.className = "gallery-card";
+
+            card.innerHTML = `
+                <img
+                  src="${getImageUrl(galleryImage.image)}"
+                  alt="Vehicle gallery image"
+                >
+
+                <div class="gallery-card-bottom">
+
+                  <button
+                    type="button"
+                    class="gallery-delete-button"
+                    data-gallery-id="${galleryImage.id}"
+                  >
+                    🗑️ Delete Photo
+                  </button>
+
+                </div>
+              `;
+
+            existingGallery.appendChild(card);
+          });
+
+          document
+            .querySelectorAll(".gallery-delete-button")
+            .forEach((button) => {
+              button.addEventListener("click", () =>
+                deleteGalleryImage(button.dataset.galleryId),
+              );
+            });
+        } catch (error) {
+          console.error(error);
+
+          galleryCount.textContent = "Unable to load gallery.";
+
+          showMessage(error.message || "Unable to load gallery.", "error");
+        }
+      }
+
+      /* =========================
+         DELETE GALLERY PHOTO
+      ========================= */
+
+      async function deleteGalleryImage(galleryId) {
+        const confirmed = confirm(
+          "Are you sure you want to delete this gallery photo?",
+        );
+
+        if (!confirmed) {
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `${API_URL}/api/cars/gallery/${galleryId}`,
+            {
+              method: "DELETE",
+
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            },
+          );
+
+          const data = await response.json();
+
+          if (response.status === 401) {
+            localStorage.removeItem("gerardAdminToken");
+
+            window.location.href = "admin.html";
+
+            return;
+          }
+
+          if (!response.ok) {
+            throw new Error(data.message || "Unable to delete gallery photo.");
+          }
+
+          showMessage("Gallery photo deleted successfully.", "success");
+
+          if (editingCarId) {
+            await loadGallery(editingCarId);
+
+            await loadCars();
+          }
+        } catch (error) {
+          console.error(error);
+
+          showMessage(
+            error.message || "Unable to delete gallery photo.",
+            "error",
+          );
+        }
+      }
+
+      /* =========================
+         CANCEL EDIT
+      ========================= */
+
+      cancelEditButton.addEventListener("click", resetForm);
+
+      /* =========================
+         RESET FORM
+      ========================= */
+
+      function resetForm() {
+        editingCarId = null;
+
+        currentGallery = [];
+
+        currentMainImageExists = false;
+
+        selectedImageFiles = [];
+
+        selectedGalleryFiles = [];
+
+        carForm.reset();
+
+        availableInput.value = "1";
+
+        formTitle.textContent = "➕ Add New Car";
+
+        saveButton.textContent = "Add Car";
+
+        cancelEditButton.style.display = "none";
+
+        existingGallerySection.style.display = "none";
+
+        existingGallery.innerHTML = "";
+
+        mainImageBox.innerHTML = "";
+
+        galleryCount.textContent = "";
+
+        photoPreview.innerHTML = "";
+
+        imagesInput.value = "";
+
+        galleryImagesInput.value = "";
+
+        gallerySelectedPreview.innerHTML = "";
+
+        updatePhotoLimitDisplay();
+
+        updateGalleryUploadLimit();
+      }
+
+      /* =========================
+         DELETE CAR
+      ========================= */
+
+      async function deleteCar(id) {
+        const car = cars.find((item) => String(item.id) === String(id));
+
+        if (!car) {
+          return;
+        }
+
+        const carName = `${car.brand} ${car.model}`;
+
+        const confirmed = confirm(
+          `Are you sure you want to delete ${carName}? This will also delete all pictures for this vehicle.`,
+        );
+
+        if (!confirmed) {
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_URL}/api/cars/${id}`, {
+            method: "DELETE",
+
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          const data = await response.json();
+
+          if (response.status === 401) {
+            localStorage.removeItem("gerardAdminToken");
+
+            window.location.href = "admin.html";
+
+            return;
+          }
+
+          if (!response.ok) {
+            throw new Error(data.message || "Unable to delete vehicle.");
+          }
+
+          showMessage("Vehicle deleted successfully.", "success");
+
+          if (String(editingCarId) === String(id)) {
+            resetForm();
+          }
+
+          await loadCars();
+        } catch (error) {
+          console.error(error);
+
+          showMessage(error.message || "Unable to delete vehicle.", "error");
+        }
+      }
+
+      /* =========================
+         LOGOUT
+      ========================= */
+
+      logoutButton.addEventListener("click", function () {
+        localStorage.removeItem("gerardAdminToken");
+
+        window.location.href = "admin.html";
+      });
+
+      /* =========================
+         START
+      ========================= */
+
+      updatePhotoLimitDisplay();
+
+      updateGalleryUploadLimit();
+
+      loadCars();
+    </script>
+  </body>
+</html>

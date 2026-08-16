@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="description" content="Gerard Cars - Vehicle details" />
+
+    <title>Gerard Cars | Vehicle Details</title>
+
+    <link rel="stylesheet" href="style.css" />
+
+    <style>
+      .details-page {
+        min-height: 100vh;
+        background: #f4f6f8;
+        padding: 120px 20px 60px;
+      }
+
+      .details-container {
+        width: min(1100px, 94%);
+        margin: auto;
+      }
+
+      .back-link {
+        display: inline-block;
+        margin-bottom: 25px;
+        color: #111827;
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      .back-link:hover {
+        text-decoration: underline;
+      }
+
+      .details-card {
+        background: white;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .details-image-container {
+        min-height: 500px;
+        background: #e5e7eb;
+        position: relative;
+      }
+
+      .details-image {
+        width: 100%;
+        height: 100%;
+        min-height: 500px;
+        object-fit: cover;
+        display: block;
+      }
+
+      .details-info {
+        padding: 45px;
+      }
+
+      .details-label {
+        display: inline-block;
+        margin-bottom: 12px;
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        color: #6b7280;
+      }
+
+      .details-info h1 {
+        font-size: clamp(30px, 5vw, 48px);
+        margin-bottom: 15px;
+        color: #111827;
+      }
+
+      .details-price {
+        font-size: 30px;
+        font-weight: 900;
+        margin-bottom: 25px;
+        color: #111827;
+      }
+
+      .details-status {
+        display: inline-block;
+        padding: 7px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 800;
+        margin-bottom: 25px;
+      }
+
+      .details-status.available {
+        background: #dcfce7;
+        color: #166534;
+      }
+
+      .details-status.sold {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .details-description {
+        color: #4b5563;
+        line-height: 1.8;
+        margin-bottom: 30px;
+      }
+
+      .specifications {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-bottom: 30px;
+      }
+
+      .specification {
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 15px;
+      }
+
+      .specification span {
+        display: block;
+        color: #6b7280;
+        font-size: 13px;
+        margin-bottom: 5px;
+      }
+
+      .specification strong {
+        color: #111827;
+      }
+
+      .details-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .details-actions .btn {
+        text-decoration: none;
+      }
+
+      .loading-details {
+        text-align: center;
+        padding: 80px 20px;
+        color: #6b7280;
+        font-size: 18px;
+      }
+
+      .error-details {
+        text-align: center;
+        background: white;
+        padding: 50px 25px;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+      }
+
+      .error-details h2 {
+        margin-bottom: 10px;
+      }
+
+      .error-details p {
+        color: #6b7280;
+        margin-bottom: 20px;
+      }
+
+      @media (max-width: 800px) {
+        .details-page {
+          padding-top: 100px;
+        }
+
+        .details-card {
+          grid-template-columns: 1fr;
+        }
+
+        .details-image-container,
+        .details-image {
+          min-height: 350px;
+        }
+
+        .details-info {
+          padding: 30px 25px;
+        }
+      }
+
+      @media (max-width: 500px) {
+        .details-page {
+          padding-left: 12px;
+          padding-right: 12px;
+        }
+
+        .details-info {
+          padding: 25px 18px;
+        }
+
+        .specifications {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ========================================
+         NAVIGATION
+    ======================================== -->
+
+    <header class="site-header">
+      <nav class="navbar">
+        <a href="index.html#home" class="logo"> 🚗 Gerard Cars </a>
+
+        <ul class="nav-links">
+          <li>
+            <a href="index.html#home">Home</a>
+          </li>
+
+          <li>
+            <a href="index.html#cars">Cars</a>
+          </li>
+
+          <li>
+            <a href="index.html#about">About</a>
+          </li>
+
+          <li>
+            <a href="index.html#location">Location</a>
+          </li>
+
+          <li>
+            <a href="index.html#contact">Contact</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- ========================================
+         VEHICLE DETAILS
+    ======================================== -->
+
+    <main class="details-page">
+      <div class="details-container">
+        <a href="index.html#cars" class="back-link">
+          ← Back to Available Cars
+        </a>
+
+        <div id="detailsLoading" class="loading-details">
+          Loading vehicle details...
+        </div>
+
+        <div id="detailsError" class="error-details" style="display: none">
+          <h2>Vehicle Not Found</h2>
+
+          <p>We could not find the vehicle you are looking for.</p>
+
+          <a href="index.html#cars" class="btn primary-btn">
+            View Available Cars
+          </a>
+        </div>
+
+        <div id="detailsCard" class="details-card" style="display: none">
+          <!-- IMAGE -->
+
+          <div class="details-image-container">
+            <img id="detailsImage" class="details-image" src="" alt="Vehicle" />
+          </div>
+
+          <!-- INFORMATION -->
+
+          <div class="details-info">
+            <span class="details-label"> VEHICLE DETAILS </span>
+
+            <h1 id="detailsName">Vehicle</h1>
+
+            <div id="detailsPrice" class="details-price">₦0</div>
+
+            <span id="detailsStatus" class="details-status available">
+              Available
+            </span>
+
+            <p id="detailsDescription" class="details-description">
+              Quality vehicle available at Gerard Cars.
+            </p>
+
+            <!-- SPECIFICATIONS -->
+
+            <div class="specifications">
+              <div class="specification">
+                <span>📅 Year</span>
+
+                <strong id="detailsYear"> - </strong>
+              </div>
+
+              <div class="specification">
+                <span>⚙️ Transmission</span>
+
+                <strong id="detailsTransmission"> Automatic </strong>
+              </div>
+
+              <div class="specification">
+                <span>⛽ Fuel Type</span>
+
+                <strong id="detailsFuel"> Petrol </strong>
+              </div>
+
+              <div class="specification">
+                <span>📍 Location</span>
+
+                <strong id="detailsLocation"> Ago, Lagos, Nigeria </strong>
+              </div>
+            </div>
+
+            <!-- ACTIONS -->
+
+            <div class="details-actions">
+              <a
+                id="whatsappButton"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn whatsapp-btn"
+              >
+                💬 Contact Dealer on WhatsApp
+              </a>
+
+              <a href="index.html#contact" class="btn primary-btn">
+                Send Inquiry
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ========================================
+         FOOTER
+    ======================================== -->
+
+    <footer>
+      <div class="footer-content">
+        <div class="footer-brand">
+          <h3>Gerard Cars</h3>
+
+          <p>Quality vehicles at affordable prices.</p>
+        </div>
+
+        <div class="footer-links">
+          <a href="index.html#home"> Home </a>
+
+          <a href="index.html#cars"> Cars </a>
+
+          <a href="index.html#about"> About </a>
+
+          <a href="index.html#location"> Location </a>
+
+          <a href="index.html#contact"> Contact </a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>
+          ©
+          <span class="current-year"> 2026 </span>
+          Gerard Cars. All Rights Reserved.
+        </p>
+      </div>
+    </footer>
+
+    <!-- ========================================
+         DATABASE SCRIPT
+    ======================================== -->
+
+    <script>
+      const GERARD_API_URL = "http://localhost:3000";
+
+      const detailsLoading = document.getElementById("detailsLoading");
+
+      const detailsError = document.getElementById("detailsError");
+
+      const detailsCard = document.getElementById("detailsCard");
+
+      const detailsImage = document.getElementById("detailsImage");
+
+      const detailsName = document.getElementById("detailsName");
+
+      const detailsPrice = document.getElementById("detailsPrice");
+
+      const detailsStatus = document.getElementById("detailsStatus");
+
+      const detailsDescription = document.getElementById("detailsDescription");
+
+      const detailsYear = document.getElementById("detailsYear");
+
+      const detailsTransmission = document.getElementById(
+        "detailsTransmission",
+      );
+
+      const detailsFuel = document.getElementById("detailsFuel");
+
+      const detailsLocation = document.getElementById("detailsLocation");
+
+      const whatsappButton = document.getElementById("whatsappButton");
+
+      /* ========================================
+         FORMAT PRICE
+      ======================================== */
+
+      function formatPrice(price) {
+        const number = Number(price);
+
+        if (Number.isNaN(number)) {
+          return price || "Contact Dealer";
+        }
+
+        return "₦" + number.toLocaleString("en-NG");
+      }
+
+      /* ========================================
+         GET CAR ID FROM URL
+      ======================================== */
+
+      const urlParams = new URLSearchParams(window.location.search);
+
+      const carId = urlParams.get("id");
+
+      /* ========================================
+         LOAD VEHICLE
+      ======================================== */
+
+      async function loadVehicle() {
+        if (!carId) {
+          showError();
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `${GERARD_API_URL}/api/cars/${encodeURIComponent(carId)}`,
+          );
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.message || "Vehicle not found.");
+          }
+
+          const car = data.car || data;
+
+          displayVehicle(car);
+        } catch (error) {
+          console.error("Unable to load vehicle:", error);
+
+          showError();
+        }
+      }
+
+      /* ========================================
+         DISPLAY VEHICLE
+      ======================================== */
+
+      function displayVehicle(car) {
+        const carName = `${car.brand || ""} ${car.model || ""}`.trim();
+
+        const price = formatPrice(car.price);
+
+        const image = car.image || "images/toyota-camry.png";
+
+        const year = car.year || "Contact Dealer";
+
+        const description =
+          car.description || "Quality vehicle available at Gerard Cars.";
+
+        const isAvailable = Number(car.available) === 1;
+
+        /* PAGE TITLE */
+
+        document.title = `${carName} | Gerard Cars`;
+
+        /* IMAGE */
+
+        detailsImage.src = image;
+
+        detailsImage.alt = carName;
+
+        detailsImage.onerror = function () {
+          this.src = "images/toyota-camry.png";
+        };
+
+        /* BASIC INFORMATION */
+
+        detailsName.textContent = carName;
+
+        detailsPrice.textContent = price;
+
+        detailsDescription.textContent = description;
+
+        detailsYear.textContent = year;
+
+        detailsTransmission.textContent = car.transmission || "Automatic";
+
+        detailsFuel.textContent = car.fuel || "Petrol";
+
+        detailsLocation.textContent = car.location || "Ago, Lagos, Nigeria";
+
+        /* AVAILABILITY */
+
+        detailsStatus.textContent = isAvailable ? "Available" : "Sold";
+
+        detailsStatus.className =
+          "details-status " + (isAvailable ? "available" : "sold");
+
+        /* WHATSAPP */
+
+        const whatsappMessage = `Hello Gerard Cars, I am interested in the ${carName}. Please provide more information.`;
+
+        whatsappButton.href =
+          "https://wa.me/2347048329554?text=" +
+          encodeURIComponent(whatsappMessage);
+
+        /* SHOW PAGE */
+
+        detailsLoading.style.display = "none";
+
+        detailsError.style.display = "none";
+
+        detailsCard.style.display = "grid";
+      }
+
+      /* ========================================
+         SHOW ERROR
+      ======================================== */
+
+      function showError() {
+        detailsLoading.style.display = "none";
+
+        detailsCard.style.display = "none";
+
+        detailsError.style.display = "block";
+      }
+
+      /* ========================================
+         UPDATE YEAR
+      ======================================== */
+
+      document.querySelectorAll(".current-year").forEach(function (element) {
+        element.textContent = new Date().getFullYear();
+      });
+
+      /* ========================================
+         START
+      ======================================== */
+
+      loadVehicle();
+    </script>
+  </body>
+</html>

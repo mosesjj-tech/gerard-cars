@@ -1,0 +1,1033 @@
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Gerard Cars - Admin Dashboard</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+        color: #111;
+        min-height: 100vh;
+      }
+
+      header {
+        background: #111;
+        color: white;
+        padding: 20px;
+      }
+
+      .header-container {
+        max-width: 1150px;
+        margin: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .logo {
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .header-button {
+        border: none;
+        padding: 10px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      .website-button {
+        background: white;
+        color: #111;
+      }
+
+      .logout-button {
+        background: #dc2626;
+        color: white;
+      }
+
+      .header-button:hover {
+        opacity: 0.85;
+      }
+
+      main {
+        max-width: 1150px;
+        margin: 30px auto;
+        padding: 0 20px;
+      }
+
+      .welcome,
+      .section {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+      }
+
+      .welcome h1 {
+        margin-bottom: 8px;
+      }
+
+      .welcome p {
+        color: #666;
+      }
+
+      .section h2 {
+        margin-bottom: 20px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+      }
+
+      .form-group {
+        margin-bottom: 5px;
+      }
+
+      .form-group.full {
+        grid-column: 1 / -1;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 7px;
+        font-weight: bold;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 15px;
+      }
+
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: #111;
+      }
+
+      textarea {
+        min-height: 100px;
+        resize: vertical;
+      }
+
+      .image-input {
+        padding: 10px;
+        background: #fafafa;
+      }
+
+      .image-preview-container {
+        margin-top: 15px;
+        display: none;
+      }
+
+      .image-preview {
+        width: 220px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        background: #eee;
+      }
+
+      .image-name {
+        margin-top: 8px;
+        color: #666;
+        font-size: 14px;
+      }
+
+      .form-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .add-button,
+      .update-button,
+      .cancel-button {
+        border: none;
+        padding: 13px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      .add-button,
+      .update-button {
+        background: #111;
+        color: white;
+      }
+
+      .cancel-button {
+        background: #ddd;
+        color: #111;
+        display: none;
+      }
+
+      .add-button:hover,
+      .update-button:hover {
+        background: #333;
+      }
+
+      .cancel-button:hover {
+        background: #ccc;
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .message {
+        display: none;
+        margin-top: 15px;
+        padding: 12px;
+        border-radius: 8px;
+      }
+
+      .message.success {
+        display: block;
+        background: #e8f7ee;
+        color: #16753a;
+      }
+
+      .message.error {
+        display: block;
+        background: #fdecec;
+        color: #b42318;
+      }
+
+      .cars-list {
+        display: grid;
+        gap: 15px;
+      }
+
+      .car-card {
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        padding: 18px;
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        align-items: center;
+      }
+
+      .car-left {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        min-width: 0;
+      }
+
+      .car-image {
+        width: 130px;
+        height: 90px;
+        object-fit: cover;
+        border-radius: 10px;
+        background: #eee;
+      }
+
+      .no-image {
+        width: 130px;
+        height: 90px;
+        border-radius: 10px;
+        background: #eee;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #777;
+        font-size: 13px;
+        text-align: center;
+      }
+
+      .car-info {
+        min-width: 0;
+      }
+
+      .car-info h3 {
+        margin-bottom: 8px;
+        font-size: 20px;
+      }
+
+      .car-info p {
+        color: #666;
+        margin-bottom: 5px;
+      }
+
+      .car-price {
+        font-weight: bold;
+        color: #111 !important;
+      }
+
+      .available {
+        color: #16753a !important;
+        font-weight: bold;
+      }
+
+      .unavailable {
+        color: #b42318 !important;
+        font-weight: bold;
+      }
+
+      .car-actions {
+        display: flex;
+        gap: 8px;
+        flex-shrink: 0;
+      }
+
+      .edit-button,
+      .delete-button {
+        border: none;
+        padding: 10px 15px;
+        border-radius: 7px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      .edit-button {
+        background: #2563eb;
+        color: white;
+      }
+
+      .edit-button:hover {
+        background: #1d4ed8;
+      }
+
+      .delete-button {
+        background: #b42318;
+        color: white;
+      }
+
+      .delete-button:hover {
+        background: #8f1d14;
+      }
+
+      .empty,
+      .loading {
+        text-align: center;
+        padding: 30px;
+        color: #666;
+      }
+
+      .edit-mode-title {
+        color: #2563eb;
+      }
+
+      @media (max-width: 750px) {
+        .header-container {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .header-actions {
+          width: 100%;
+        }
+
+        .header-button {
+          flex: 1;
+        }
+
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .form-group.full {
+          grid-column: auto;
+        }
+
+        .car-card {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .car-left {
+          align-items: flex-start;
+        }
+
+        .car-actions {
+          width: 100%;
+        }
+
+        .edit-button,
+        .delete-button {
+          flex: 1;
+        }
+      }
+
+      @media (max-width: 500px) {
+        .car-left {
+          flex-direction: column;
+        }
+
+        .car-image,
+        .no-image {
+          width: 100%;
+          height: 180px;
+        }
+
+        .image-preview {
+          width: 100%;
+          height: 200px;
+        }
+
+        .form-buttons {
+          flex-direction: column;
+        }
+
+        .form-buttons button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <div class="header-container">
+        <div class="logo">🚗 Gerard Cars Admin</div>
+
+        <div class="header-actions">
+          <button class="header-button website-button" id="websiteButton">
+            View Website
+          </button>
+
+          <button class="header-button logout-button" id="logoutButton">
+            Logout
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="welcome">
+        <h1>Admin Dashboard</h1>
+
+        <p>Manage your Gerard Cars vehicles from here.</p>
+      </section>
+
+      <section class="section">
+        <h2 id="formTitle">Add New Car</h2>
+
+        <form id="carForm">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="brand">Brand</label>
+
+              <input type="text" id="brand" placeholder="Toyota" required />
+            </div>
+
+            <div class="form-group">
+              <label for="model">Model</label>
+
+              <input type="text" id="model" placeholder="Camry" required />
+            </div>
+
+            <div class="form-group">
+              <label for="year">Year</label>
+
+              <input
+                type="number"
+                id="year"
+                placeholder="2026"
+                min="1900"
+                max="2100"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="price">Price</label>
+
+              <input
+                type="number"
+                id="price"
+                placeholder="16000000"
+                min="0"
+                required
+              />
+            </div>
+
+            <div class="form-group full">
+              <label for="description">Description</label>
+
+              <textarea
+                id="description"
+                placeholder="Describe the vehicle..."
+              ></textarea>
+            </div>
+
+            <div class="form-group full">
+              <label for="image">Car Image</label>
+
+              <input
+                type="file"
+                id="image"
+                class="image-input"
+                accept="image/png,image/jpeg,image/jpg,image/webp"
+              />
+
+              <small>
+                Choose a JPG, PNG or WEBP image. Maximum size: 5MB.
+              </small>
+
+              <div class="image-preview-container" id="imagePreviewContainer">
+                <img
+                  id="imagePreview"
+                  class="image-preview"
+                  alt="Selected car preview"
+                />
+
+                <p class="image-name" id="imageName"></p>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="available">Availability</label>
+
+              <select id="available">
+                <option value="1">Available</option>
+
+                <option value="0">Unavailable</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-buttons">
+            <button type="submit" class="add-button" id="submitButton">
+              Add Car
+            </button>
+
+            <button type="button" class="cancel-button" id="cancelButton">
+              Cancel Edit
+            </button>
+          </div>
+        </form>
+
+        <div id="formMessage" class="message"></div>
+      </section>
+
+      <section class="section">
+        <h2>Current Cars</h2>
+
+        <div id="carsList" class="cars-list">
+          <p class="loading">Loading cars...</p>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const API_URL = "http://localhost:3000";
+
+      const token = localStorage.getItem("gerardAdminToken");
+
+      let editingCarId = null;
+
+      let selectedImage = null;
+
+      // =====================================================
+      // CHECK LOGIN
+      // =====================================================
+
+      if (!token) {
+        window.location.href = "admin.html";
+      }
+
+      // =====================================================
+      // ELEMENTS
+      // =====================================================
+
+      const carForm = document.getElementById("carForm");
+
+      const formTitle = document.getElementById("formTitle");
+
+      const submitButton = document.getElementById("submitButton");
+
+      const cancelButton = document.getElementById("cancelButton");
+
+      const formMessage = document.getElementById("formMessage");
+
+      const carsList = document.getElementById("carsList");
+
+      const imageInput = document.getElementById("image");
+
+      const imagePreview = document.getElementById("imagePreview");
+
+      const imagePreviewContainer = document.getElementById(
+        "imagePreviewContainer",
+      );
+
+      const imageName = document.getElementById("imageName");
+
+      // =====================================================
+      // VIEW WEBSITE
+      // =====================================================
+
+      document
+        .getElementById("websiteButton")
+        .addEventListener("click", function () {
+          window.location.href = "index.html";
+        });
+
+      // =====================================================
+      // LOGOUT
+      // =====================================================
+
+      document
+        .getElementById("logoutButton")
+        .addEventListener("click", function () {
+          localStorage.removeItem("gerardAdminToken");
+
+          window.location.href = "admin.html";
+        });
+
+      // =====================================================
+      // IMAGE PREVIEW
+      // =====================================================
+
+      imageInput.addEventListener("change", function () {
+        const file = imageInput.files[0];
+
+        if (!file) {
+          selectedImage = null;
+
+          imagePreviewContainer.style.display = "none";
+
+          return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+          alert("Image is too large. Maximum size is 5MB.");
+
+          imageInput.value = "";
+
+          selectedImage = null;
+
+          imagePreviewContainer.style.display = "none";
+
+          return;
+        }
+
+        selectedImage = file;
+
+        const imageURL = URL.createObjectURL(file);
+
+        imagePreview.src = imageURL;
+
+        imageName.textContent = file.name;
+
+        imagePreviewContainer.style.display = "block";
+      });
+
+      // =====================================================
+      // MESSAGE
+      // =====================================================
+
+      function showMessage(type, text) {
+        formMessage.className = "message " + type;
+
+        formMessage.textContent = text;
+      }
+
+      function clearMessage() {
+        formMessage.className = "message";
+
+        formMessage.textContent = "";
+      }
+
+      // =====================================================
+      // FORMAT PRICE
+      // =====================================================
+
+      function formatPrice(price) {
+        const number = Number(price);
+
+        if (Number.isNaN(number)) {
+          return "Contact Dealer";
+        }
+
+        return "₦" + number.toLocaleString("en-NG");
+      }
+
+      // =====================================================
+      // LOAD CARS
+      // =====================================================
+
+      async function loadCars() {
+        carsList.innerHTML = '<p class="loading">Loading cars...</p>';
+
+        try {
+          const response = await fetch(`${API_URL}/api/cars`);
+
+          const data = await response.json();
+
+          if (!response.ok || !data.success) {
+            throw new Error(data.message || "Unable to load cars.");
+          }
+
+          if (!data.cars || data.cars.length === 0) {
+            carsList.innerHTML =
+              '<div class="empty">No cars have been added yet.</div>';
+
+            return;
+          }
+
+          carsList.innerHTML = "";
+
+          data.cars.forEach(function (car) {
+            createCarCard(car);
+          });
+        } catch (error) {
+          console.error(error);
+
+          carsList.innerHTML = `
+            <div class="message error">
+              ${escapeHTML(error.message)}
+            </div>
+          `;
+        }
+      }
+
+      // =====================================================
+      // CREATE CAR CARD
+      // =====================================================
+
+      function createCarCard(car) {
+        const card = document.createElement("div");
+
+        card.className = "car-card";
+
+        const carName = `${car.brand} ${car.model}`;
+
+        const availability = Number(car.available) === 1;
+
+        let imageHTML = '<div class="no-image">No image</div>';
+
+        if (car.image) {
+          imageHTML = `
+            <img
+              class="car-image"
+              src="${escapeAttribute(car.image)}"
+              alt="${escapeAttribute(carName)}"
+              onerror="this.outerHTML='<div class=&quot;no-image&quot;>Image not found</div>'"
+            />
+          `;
+        }
+
+        card.innerHTML = `
+          <div class="car-left">
+
+            ${imageHTML}
+
+            <div class="car-info">
+
+              <h3>
+                ${escapeHTML(carName)}
+              </h3>
+
+              <p>
+                Year:
+                ${escapeHTML(String(car.year || "N/A"))}
+              </p>
+
+              <p class="car-price">
+                Price:
+                ${formatPrice(car.price)}
+              </p>
+
+              <p class="${availability ? "available" : "unavailable"}">
+                ${availability ? "✓ Available" : "✕ Unavailable"}
+              </p>
+
+            </div>
+
+          </div>
+
+          <div class="car-actions">
+
+            <button
+              class="edit-button"
+              type="button"
+            >
+              Edit
+            </button>
+
+            <button
+              class="delete-button"
+              type="button"
+            >
+              Delete
+            </button>
+
+          </div>
+        `;
+
+        const editButton = card.querySelector(".edit-button");
+
+        const deleteButton = card.querySelector(".delete-button");
+
+        editButton.addEventListener("click", function () {
+          editCar(car);
+        });
+
+        deleteButton.addEventListener("click", function () {
+          deleteCar(car.id);
+        });
+
+        carsList.appendChild(card);
+      }
+
+      // =====================================================
+      // EDIT CAR
+      // =====================================================
+
+      function editCar(car) {
+        editingCarId = car.id;
+
+        document.getElementById("brand").value = car.brand || "";
+
+        document.getElementById("model").value = car.model || "";
+
+        document.getElementById("year").value = car.year || "";
+
+        document.getElementById("price").value = car.price || "";
+
+        document.getElementById("description").value = car.description || "";
+
+        document.getElementById("available").value =
+          Number(car.available) === 1 ? "1" : "0";
+
+        // Don't force a new image.
+        // Existing image will remain unless
+        // a new image is selected.
+
+        imageInput.value = "";
+
+        selectedImage = null;
+
+        imagePreviewContainer.style.display = "none";
+
+        formTitle.textContent = "Edit Car";
+
+        formTitle.classList.add("edit-mode-title");
+
+        submitButton.textContent = "Update Car";
+
+        submitButton.className = "update-button";
+
+        cancelButton.style.display = "block";
+
+        clearMessage();
+
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }
+
+      // =====================================================
+      // CANCEL EDIT
+      // =====================================================
+
+      cancelButton.addEventListener("click", function () {
+        resetForm();
+      });
+
+      function resetForm() {
+        editingCarId = null;
+
+        selectedImage = null;
+
+        carForm.reset();
+
+        imagePreviewContainer.style.display = "none";
+
+        formTitle.textContent = "Add New Car";
+
+        formTitle.classList.remove("edit-mode-title");
+
+        submitButton.textContent = "Add Car";
+
+        submitButton.className = "add-button";
+
+        cancelButton.style.display = "none";
+
+        clearMessage();
+      }
+
+      // =====================================================
+      // ADD / UPDATE CAR
+      // =====================================================
+
+      carForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        submitButton.disabled = true;
+
+        submitButton.textContent = editingCarId ? "Updating..." : "Adding...";
+
+        clearMessage();
+
+        try {
+          const formData = new FormData();
+
+          formData.append(
+            "brand",
+            document.getElementById("brand").value.trim(),
+          );
+
+          formData.append(
+            "model",
+            document.getElementById("model").value.trim(),
+          );
+
+          formData.append("year", document.getElementById("year").value);
+
+          formData.append("price", document.getElementById("price").value);
+
+          formData.append(
+            "description",
+            document.getElementById("description").value.trim(),
+          );
+
+          formData.append(
+            "available",
+            document.getElementById("available").value,
+          );
+
+          if (selectedImage) {
+            formData.append("image", selectedImage);
+          }
+
+          const url = editingCarId
+            ? `${API_URL}/api/cars/${editingCarId}`
+            : `${API_URL}/api/cars`;
+
+          const method = editingCarId ? "PUT" : "POST";
+
+          const response = await fetch(url, {
+            method: method,
+
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+
+            body: formData,
+          });
+
+          const data = await response.json();
+
+          if (!response.ok || !data.success) {
+            throw new Error(data.message || "Unable to save car.");
+          }
+
+          const wasEditing = Boolean(editingCarId);
+
+          resetForm();
+
+          showMessage(
+            "success",
+            wasEditing
+              ? "Car updated successfully!"
+              : "Car added successfully!",
+          );
+
+          await loadCars();
+        } catch (error) {
+          console.error(error);
+
+          showMessage("error", error.message || "Unable to save car.");
+        } finally {
+          submitButton.disabled = false;
+
+          submitButton.textContent = editingCarId ? "Update Car" : "Add Car";
+        }
+      });
+
+      // =====================================================
+      // DELETE CAR
+      // =====================================================
+
+      async function deleteCar(id) {
+        const confirmed = confirm("Are you sure you want to delete this car?");
+
+        if (!confirmed) {
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_URL}/api/cars/${id}`, {
+            method: "DELETE",
+
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          const data = await response.json();
+
+          if (!response.ok || !data.success) {
+            throw new Error(data.message || "Unable to delete car.");
+          }
+
+          alert("Car deleted successfully.");
+
+          await loadCars();
+        } catch (error) {
+          console.error(error);
+
+          alert(error.message || "Unable to delete car.");
+        }
+      }
+
+      // =====================================================
+      // ESCAPE HTML
+      // =====================================================
+
+      function escapeHTML(value) {
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function escapeAttribute(value) {
+        return escapeHTML(value);
+      }
+
+      // =====================================================
+      // START
+      // =====================================================
+
+      loadCars();
+    </script>
+  </body>
+</html>
+```

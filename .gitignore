@@ -1,0 +1,11 @@
+node_modules/
+backend/node_modules/
+backend/.env
+.env
+*.db
+*.sqlite
+*.sqlite3
+
+*.lnk
+
+backend/server.jnode
